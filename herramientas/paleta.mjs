@@ -16,7 +16,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { salir, hoy, dirMarca, marcaActiva } from "./lib/sistema.mjs";
+import { salir, hoy, dirMarca, marcaActiva, ponerCampoFicha } from "./lib/sistema.mjs";
 
 export function rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
 export function lum(hex) { const c = rgb(hex).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
@@ -113,6 +113,8 @@ if (esPrincipal) {
     // El texto en color de acento (enlaces, etiquetas) sigue al acento
     texto = texto.replace(/(--accent-text\s*:\s*)#[0-9a-fA-F]{6}/, "$1" + p.acento);
     writeFileSync(css, texto);
+    // La ficha anota los 5 colores (el panel y el agente la leen para saber que la marca ya tiene paleta)
+    ponerCampoFicha(id, "Colores (fondo, fondo 2, texto, acento, acento 2)", [p.fondo, p.fondo2, p.texto, p.acento, p.acento2].join(", "), "Cómo se ve");
     console.log(`Paleta aplicada en ${css.replace(/\\/g, "/")}. Los videos nuevos la usan; los ya hechos no cambian.`);
   } else if (orden === "proponer") {
     const id = opt("marca") || marcaActiva(), d = dirMarca(id);

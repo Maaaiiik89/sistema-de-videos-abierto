@@ -21,10 +21,13 @@ Versión 0.4 (noviembre de 2026). Proyecto abierto: la idea es irlo mejorando co
 - Grabador de pantalla, cámara y solo audio, con marcas.
 - 5 músicas libres, catálogo de HyperFrames con `Conectar-musica.bat`, 11 sonidos.
 - Seguridad y privacidad documentadas (`SEGURIDAD.md`), versiones fijas, límite de créditos, reglas para el agente.
+- **Pedidos de video**: conversando o con un formulario en el panel (con referencias y archivos de hasta 16 GB); el agente revisa siempre el pedido y no empieza sin tu confirmación.
+- **Primeros pasos guiados** con una acción en cada paso, **paleta desde un color** con contraste probado, **ficha de marca** con contexto opcional, **manual por app**, **almacenamiento** con Papelera y **recorrido** del panel.
+- **Referencias de video** (módulo): baja videos públicos sin usar tus cuentas, o analiza los que subas, y deja su ritmo, sus cortes y 12 cuadros en una imagen para que el agente los estudie.
+- **Publicado en GitHub** con versiones automáticas (zip + huella SHA-256); `Actualizar.bat` y el panel las encuentran solos.
 
 ## Lo que falta
 
-- **Repositorio en GitHub** con publicación automática de versiones (zip + huella SHA-256), `README.md`, `SECURITY.md` y `.gitattributes`.
 - **Capturas en la guía de inicio**, sacadas de la grabación del tutorial.
 - **Motor de escenas 3D** como módulo reutilizable.
 - **Plantilla 4:5** para el feed de LinkedIn y Facebook.

@@ -2,7 +2,7 @@
 
 Qué hace este sistema con tus datos, qué instala, qué cuentas usa y cómo cuidarte. La primera parte es para cualquier persona; la última es para quien mantiene el sistema.
 
-Revisado en noviembre de 2026 (versión 0.4).
+Revisado en noviembre de 2026 (versión 0.5).
 
 ## En resumen
 
@@ -23,6 +23,7 @@ Revisado en noviembre de 2026 (versión 0.4).
 | Música del catálogo de HyperFrames | HeyGen | Se envía lo que buscas ("música alegre") y se descarga la pista. Solo si conectaste tu cuenta |
 | Voces o músicas generadas con IA | HeyGen | El texto del guion o la descripción de la música. Solo con tu sí, porque cuesta créditos |
 | Sacar la marca de una web | Tu computador visita esa web | Es una visita normal a la página |
+| Bajar una referencia (módulo Referencias) | Tu computador visita la red social | Es una visita a ese video, sin iniciar sesión: no se usan tus cuentas ni las cookies de tu navegador. El video queda en tu carpeta, solo para estudiarlo. yt-dlp y sus librerías se instalan con versiones fijas y huella comprobada (si no coincide, no se instalan), y el JavaScript de YouTube corre en Deno sin permisos de archivos, internet ni programas |
 | El panel (`Panel.bat`) | En tu computador | No. Solo consulta GitHub (su API o, si esta pone límite, la página pública de versiones y el `CHANGELOG.md` del repositorio) para ver si hay una versión nueva. No usa fuentes ni servicios de internet |
 | Estadísticas de uso de HyperFrames | Servidores de HyperFrames | Qué comandos se usan (no tus videos). Si iniciaste sesión, asociadas a tu cuenta. Se pueden apagar (ver abajo) |
 
@@ -109,7 +110,8 @@ El editor de video (`mcp-video/server.py`) trabaja en tu equipo: llama a FFmpeg 
 `Panel.bat` abre una página que solo responde desde tu propio computador (dirección `127.0.0.1`, puerto 4317 o el siguiente libre): nadie de tu red ni de internet puede abrirla. Además:
 
 - Cada vez que se abre crea un código de un solo uso que va dentro de la página. Sin ese código no se puede subir nada ni cambiar nada, así que otra página web abierta en tu navegador no puede usarlo.
-- Solo **escribe** archivos nuevos en `mis-videos/bandeja/` (nunca reemplaza uno que exista), qué herramientas están encendidas y la app que elegiste.
+- Solo **escribe** dentro de `mis-videos/`, y solo esto: archivos nuevos en la bandeja, en las `fuentes/` de un pedido o en el logo de una marca (nunca reemplaza uno que exista); los pedidos de video (`PEDIDO.md`) y tus respuestas a las preguntas del agente; una marca nueva con lo básico (con la misma herramienta que usa el agente); la paleta que eliges (solo si pasa las 4 pruebas de contraste); que la marca no usa personaje; qué herramientas están encendidas y la app que elegiste. Lo que escribes en el panel se guarda como texto: los links de referencia no se abren ni se bajan.
+- Solo **manda a la Papelera de reciclaje** lo que marcas en Almacenamiento, y solo dentro de los grupos que sugiere (borradores de videos entregados, videos de referencia, respaldos viejos, grabaciones originales de videos entregados hace más de 30 días, esto último con doble confirmación). Lo anota en el registro de archivos y se puede recuperar desde la Papelera.
 - Solo **abre** carpetas y archivos de la carpeta del sistema, y solo de tipos que no se ejecutan (videos, audios, imágenes, PDF, textos). Para reparar o actualizar abre `Instalar.bat` o `Actualizar.bat`, que te muestran todo y preguntan.
 - No le habla al agente ni a tu app de IA.
 
@@ -146,6 +148,7 @@ Está escrito en `AGENTS.md` y en las skills:
 | --- | --- |
 | HyperFrames `0.9.30` | `herramientas/instalar.ps1` (`$VERSION_HYPERFRAMES`), `Conectar-musica.bat`, `herramientas/nuevo-video.mjs` (init), `herramientas/*.mjs` (mensajes), `AGENTS.md`, `modulos/*/skills/*/SKILL.md`, `SEGURIDAD.md`, `estilos/*.md` |
 | Whisper `20250625` | `herramientas/instalar.ps1` (`$VERSION_WHISPER`) |
+| yt-dlp `2026.10.26`, Deno `2.9.8` y sus librerías | `modulos/referencias/entorno/pyproject.toml` y `uv.lock` (versión y huella SHA-256 de cada paquete; `exclude-newer` no deja entrar paquetes publicados en las dos semanas anteriores). También `herramientas/referencia.mjs` (`VERSION_YTDLP`), `modulos/referencias/modulo.json` y `TERCEROS.md`. Para subir: cambia la versión y la fecha de `exclude-newer` en `pyproject.toml`, corre `uv lock` en esa carpeta y prueba con TikTok |
 | Editor de video | `mcp-video/pyproject.toml` y `mcp-video/uv.lock` |
 
 Para subir de versión:
@@ -154,6 +157,8 @@ Para subir de versión:
 3. Haz un video de prueba completo: `nuevo-video.mjs`, check, snapshot, render borrador y render final, en vertical y en 16:9.
 4. Corre `Instalar.bat` en un usuario de Windows limpio.
 5. Sube la versión en `sistema.json`, anota el cambio en `CHANGELOG.md` y publica la versión (ver abajo).
+
+Cada mejora se anota en `CHANGELOG.md`, sección "En desarrollo", apenas se termina. Al publicar, esa sección se renombra con la versión (`## 0.5.0 (mes de año)`), se sube la versión en `sistema.json` y se crea una sección "En desarrollo" vacía.
 
 ### Al publicar una versión
 

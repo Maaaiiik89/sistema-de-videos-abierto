@@ -2,7 +2,7 @@
 
 Guía para el agente (Claude, ChatGPT/Codex, Antigravity u otro) que trabaja en esta carpeta. La persona que te usa puede no saber nada de programación: habla simple, explica cada paso en una frase y nunca le pidas que edite código ni que escriba comandos. Lo que haya que correr lo corres tú, o es un `.bat` de doble clic (`Instalar.bat`, `Panel.bat`, `Actualizar.bat`, `Conectar-musica.bat`, `Grabador.bat`).
 
-**Todo se configura conversando contigo.** El panel (`Panel.bat`, una página local en el navegador) solo guía, muestra lo que hiciste para que la persona lo revise, recibe archivos en la bandeja y mantiene el sistema. No está conectado a ti: comparten esta carpeta. Lee tus archivos, así que respeta sus formatos (ver "Lo que lee el panel").
+**Conversar contigo es el camino principal.** El panel (`Panel.bat`, una página local en el navegador) guía los primeros pasos, muestra lo que hiciste para que la persona lo revise y mantiene el sistema. También deja hacer algunas cosas sin conversar: pedir un video con un formulario (con archivos pesados), crear una marca con lo básico, elegir la paleta, subir archivos y liberar espacio. No está conectado a ti: comparten esta carpeta. Lee y escribe archivos que tú también usas, así que respeta sus formatos (ver "Lo que lee el panel").
 
 Este sistema hace tres tipos de video, para una o varias marcas:
 
@@ -29,11 +29,18 @@ mis-videos/
 
 1. **¿Hay marca?** `node herramientas/marcas.mjs lista`. Si no hay ninguna, o la ficha de la activa dice "sin completar", sigue la skill `empezar` aunque la persona pida otra cosa (explícale que son unas preguntas de una sola vez).
 2. **¿Con qué marca?** Si hay varias, confirma: "¿Seguimos con <marca activa>?". Para cambiar: `node herramientas/marcas.mjs activar <id>`.
-3. **¿Hay algo en la bandeja?** Si `mis-videos/bandeja/` tiene archivos, ordénalos primero (skill `organizar`), preguntando lo que no esté claro.
+3. **¿Hay pedidos esperando?** `node herramientas/pedidos.mjs pendientes`. Si hay pedidos enviados desde el panel o respondidos, revísalos antes que nada (skill `pedidos`): la persona puede escribirte solo "hola" esperando que los veas.
+4. **¿Hay algo en la bandeja?** Si `mis-videos/bandeja/` tiene archivos, ordénalos primero (skill `organizar`), preguntando lo que no esté claro.
 
-## Al empezar cada video: ¿animado, grabado o mixto?
+## Al empezar cada video: primero el pedido
 
-Pregúntalo siempre (salvo que sea obvio). Cada tipo tiene su orden y **no se salta ningún paso**:
+Todo video parte de un **pedido** (`PEDIDO.md` en la carpeta del video), venga del panel o del chat. Si la persona te pide un video conversando, escribe el pedido con `node herramientas/pedidos.mjs crear …` mientras conversan. **Revísalo siempre** (skill `pedidos`): que no falte nada, que tenga sentido y que los archivos sirvan; pregunta lo que falte y **no escribas el guion hasta que la persona confirme el resumen**. Después arma el proyecto en esa misma carpeta: `node herramientas/nuevo-video.mjs --carpeta <AAAA-MM-DD_nombre>`.
+
+Sugiere el panel (Pedidos) cuando conviene: archivos pesados (las apps no aceptan adjuntos grandes), archivos que van en el video (lo adjunto en el chat queda en la conversación, no en la carpeta) o muchos datos de una vez. Nunca es obligatorio.
+
+## Animado, grabado o mixto
+
+Pregúntalo siempre (salvo que el pedido lo diga). Cada tipo tiene su orden y **no se salta ningún paso**:
 
 | Paso | Animado (`hacer-video`) | Grabado (`editar-video-real`) | Mixto (`video-mixto`) |
 | --- | --- | --- | --- |
@@ -76,6 +83,7 @@ Si la persona pide algo de un módulo apagado, dile cuál es, qué implica (si u
 | `musica` | `musica` | no |
 | `voz-ia` | `voz-ia` | no (cuesta créditos) |
 | `ilustrar` | `ilustrar` | no (de terceros) |
+| `referencias` | `referencias` | no (de terceros, usa internet) |
 
 Las skills son archivos Markdown: si tu app no las carga sola, léelas desde `modulos/<id>/skills/<nombre>/SKILL.md`. La skill `hyperframes` la instala `Instalar.bat` para las tres apps.
 
@@ -87,12 +95,14 @@ Las skills son archivos Markdown: si tu app no las carga sola, léelas desde `mo
 | `node herramientas/ordenar.mjs [--aplicar] [--video <carpeta>] [--a "<archivo>=<ruta>"]` | Ordenar la bandeja (muestra la propuesta; mueve solo con `--aplicar`) |
 | `node herramientas/recursos.mjs "<texto>" --tipo imagen\|musica\|icono\|audio [--video …] [--tematica …]` | Buscar recursos en orden: video, temática, marca, tuyos, sistema |
 | `node herramientas/paleta.mjs probadas \| generar \| verificar \| proponer \| aplicar` | Paletas con contraste probado (`proponer` las deja a la vista en el panel) |
-| `node herramientas/nuevo-video.mjs "<nombre>" --formato vertical [--tematica <id>]` | Crear un video de la marca activa |
+| `node herramientas/pedidos.mjs pendientes \| lista \| ver <carpeta> \| crear … \| revisar <carpeta> … \| estado <carpeta> <estado>` | Pedidos de video (skill `pedidos`) |
+| `node herramientas/nuevo-video.mjs --carpeta <AAAA-MM-DD_nombre>` | Armar el proyecto en la carpeta de un pedido (o `"<nombre>" --formato vertical` sin pedido) |
 | `node herramientas/revisar-texto.mjs <carpeta-del-video>` | Revisar fuentes, guiones largos y frases largas |
 | `uv run python herramientas/elegir-tomas.py` | Elegir la mejor toma de cada frase (ver su encabezado) |
 | `uv run --with numpy python herramientas/preparar-voz.py` | Subtítulos y tiempos por palabra (ver su encabezado) |
 | `node herramientas/subtitular.mjs <video> --formato vertical` | Subtítulos dinámicos sobre un video grabado |
 | `node herramientas/formato-16x9.mjs "<carpeta-del-video>"` | Versión ancha (YouTube) desde el proyecto vertical |
+| `node herramientas/referencia.mjs bajar "<link>" \| analizar "<archivo>" \| lista` | Referencias de otras cuentas: bajar (sin iniciar sesión) y analizar ritmo, cortes y cuadros (módulo `referencias`) |
 | `node herramientas/modulos.mjs lista \| activar \| apagar` | Módulos |
 | `npx.cmd hyperframes@0.9.30 …` | Revisar, previsualizar y renderizar (dentro de `proyecto/`) |
 | MCP `video-editor` | Editar grabaciones de la marca activa: limpiar voz, quitar silencios, zoom, transcribir (también audio suelto), exportar por red (`mcp-video/LEEME.md`) |
@@ -103,14 +113,23 @@ La persona revisa tu trabajo en el panel. Se actualiza solo cada pocos segundos 
 
 | Lo que muestra | De dónde lo lee |
 | --- | --- |
-| Primeros pasos | Que exista una marca; `Estado: completa` en `ficha.md`; la fila "Colores" con la paleta de `estilo.css` pasando las 4 pruebas; un logo en `estilo/assets/logo/` o algo ordenado para la marca en el registro; `Estado: aprobado (fecha)` en `personaje/PERSONAJE.md` (o "¿Tiene personaje? \| no" en la ficha); un `plan/AAAA-MM.md`; un video con `Estado \| entregado` en su `LEEME.md` o un MP4 final en `entregas/` |
-| Verificar → Marca | Las tablas `\| Campo \| Valor \|` de `ficha.md`; `--ground`, `--ground-2`, `--paper`, `--accent`, `--accent-2` y las fuentes de `estilo/assets/estilo.css`; `estilo/paletas-propuestas.json` (lo escribe `paleta.mjs proponer`); `personaje/prueba-personaje.mp4` |
+| Primeros pasos | `mis-videos/.ultima-conversacion` (lo escriben `marcas.mjs lista` y `pedidos.mjs`: así sabe que abriste la carpeta); que exista una marca; `Estado: completa` en `ficha.md`; la fila "Colores" con la paleta de `estilo.css` pasando las 4 pruebas; un logo en `estilo/assets/logo/` o algo ordenado para la marca en el registro; `Estado: aprobado (fecha)` en `personaje/PERSONAJE.md` (o "¿Tiene personaje? \| no" en la ficha); un `plan/AAAA-MM.md`; un video con `Estado \| entregado` en su `LEEME.md` o un MP4 final en `entregas/` |
+| Pedidos | `videos/<carpeta>/PEDIDO.md` (formato de `herramientas/lib/pedidos.mjs`: escríbelo con `pedidos.mjs`) y la fila "Estado" del `LEEME.md` del video |
+| Verificar → Marca | Ficha: las tablas `\| Campo \| Valor \|` de `ficha.md`, incluida la sección "Contexto (opcional)". Visual: los logos de `estilo/assets/logo/` (el panel reconoce las versiones por el nombre: `oscuro` y `icono`, por ejemplo `logo-oscuro.svg`, `icono.svg`), la paleta y las fuentes de `estilo/assets/estilo.css`, `estilo/paletas-propuestas.json` (`paleta.mjs proponer`) y los archivos de `estilo/bloques/`. Voz y música: la ficha y `personaje/prueba-personaje.mp4`. Referencias: `referencias/<id>/referencia.md` y `cuadros.jpg` (`referencia.mjs`) |
 | Verificar → Plan | `plan/AAAA-MM.md` con los títulos y columnas de `plantillas/plan-mes.md`, fechas `AAAA-MM-DD` |
 | Verificar → Videos | `videos/<carpeta>/LEEME.md` (fila "Estado"), `guion.md` y `entregas/` (`muestra.mp4`, `borrador.mp4` y los finales) |
 | Subir | `mis-videos/bandeja/` y `mis-videos/registro-de-archivos.md` (los escribe `ordenar.mjs`) |
-| Mantenimiento | `modulos/*/modulo.json`, `mis-videos/config.json` y `mis-videos/.instalacion.json` (lo escribe `Instalar.bat`) |
+| Mantenimiento | `modulos/*/modulo.json`, `mis-videos/config.json`, `mis-videos/.instalacion.json` (lo escribe `Instalar.bat`), `CHANGELOG.md` (novedades) y el tamaño de las carpetas |
 
-Desde el panel la persona puede subir archivos a la bandeja, encender o apagar módulos, elegir su app y abrir `Instalar.bat` o `Actualizar.bat`. Si dice "lo subí en el panel", mira la bandeja. Si dice que activó una herramienta, puede que necesite una conversación nueva para que veas su skill.
+**Lo que la persona puede hacer desde el panel** (y tú ves después en la carpeta):
+
+- **Pedir un video**: crea la carpeta del video con `PEDIDO.md`, `LEEME.md` (Estado: pedido) y los archivos en `fuentes/`. Responder tus preguntas: escribe la respuesta en `PEDIDO.md` y lo deja "respondido".
+- **Crear una marca** con lo básico (`marcas.mjs nueva` + nombre, a qué se dedica, a quién le habla, web, tú o usted). Queda activa y con la ficha "sin completar": complétala con la skill `empezar`.
+- **Elegir o armar la paleta**: el panel la aplica con `paleta.mjs aplicar` (solo si pasa las 4 pruebas). **Subir el logo** directo a `estilo/assets/logo/`.
+- Anotar "¿Tiene personaje? \| no", usar solo las 5 músicas incluidas (`config.json`), encender o apagar módulos y elegir su app.
+- **Liberar espacio**: manda a la Papelera de reciclaje lo que marca en Almacenamiento (borradores de videos entregados, videos de referencia, respaldos viejos, grabaciones originales de videos entregados hace más de 30 días) y lo anota en el registro. **Tú no borras archivos**: si la carpeta pesa mucho, sugiérele revisar Mantenimiento → Almacenamiento.
+
+Si dice "lo subí en el panel", mira la bandeja o las `fuentes/` del pedido. Si dice que activó una herramienta, puede que necesite una conversación nueva para que veas su skill.
 
 ## Windows: cómo correr las cosas
 
@@ -142,7 +161,7 @@ Desde el panel la persona puede subir archivos a la bandeja, encender o apagar m
 - Subtítulos dentro de la zona segura y sin tapar caras (`encuadre-seguro`). La franja de abajo (bajo 1330 px en vertical) nunca lleva texto.
 - Cada efecto de sonido lleva `data-duration`.
 - Cada dato en pantalla tiene su fuente anotada en `guion.md`.
-- Una referencia de otra cuenta aporta estructura y ritmo, nunca su contenido ni su marca.
+- Una referencia de otra cuenta aporta estructura y ritmo, nunca su contenido ni su marca (skill `referencias`). Para estudiarla mira `referencia.md` y `cuadros.jpg`, no el video completo.
 - Sonidos con licencia CC BY: su crédito va en la descripción del video (`recursos/sonidos/CREDITOS.md`).
 
 ## Seguridad y privacidad (obligatorio)

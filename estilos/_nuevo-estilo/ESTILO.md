@@ -5,7 +5,7 @@ Plantilla para un estilo nuevo. Copia esta carpeta entera a `estilos/<nombre-del
 ## Cómo sacar un estilo
 
 - **De una web:** `npx.cmd hyperframes@0.9.30 capture <url> -o referencias/captura-<nombre> --skip-vision --json`. Saca colores, fuentes (woff2), logos y capturas. Copia las fuentes a `assets/fonts/` y los logos a `assets/logo/`.
-- **De un video:** bájalo con `yt-dlp` a `referencias/<id>/` y toma su gramática: ritmo, cómo entran los títulos, paleta. Nunca su contenido ni su marca.
+- **De un video:** con el módulo Referencias (`node herramientas/referencia.mjs bajar "<link>"`, o `analizar` si la persona lo subió) y toma su gramática: ritmo, cómo entran los títulos, paleta. Nunca su contenido ni su marca.
 - **De una descripción:** fija cada adjetivo como número (hex, px, peso de fuente).
 
 ## Qué completar

@@ -28,7 +28,7 @@ recursos/musica/*
 .agents/mcp_config.json
 .respaldos/
 grabador/config.json
-referencias/
+/referencias/
 
 # Entornos y cachés
 .venv/

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Crea la carpeta de un video nuevo de la marca activa, con su estructura completa.
 // Uso: node herramientas/nuevo-video.mjs "<nombre del video>" [--formato vertical|horizontal] [--tematica <id>] [--marca <id>]
+//      node herramientas/nuevo-video.mjs --carpeta <AAAA-MM-DD_nombre> [--formato ...]   completa la carpeta de un pedido
+//      (la que creó el panel o pedidos.mjs, con su PEDIDO.md): agrega el proyecto, el guion y lo que falte, sin tocar el pedido ni fuentes/.
 //
 // Resultado:
 //   mis-videos/marcas/<marca>/videos/AAAA-MM-DD_<nombre>/
@@ -19,8 +21,14 @@ import { RAIZ, salir, slug as aSlug, hoy as fechaHoy, rel, marcaActiva, dirMarca
 
 const args = process.argv.slice(2);
 const opt = (k, def) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : def; };
-const nombre = args.find((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
+const carpetaPedido = opt("carpeta");
+let nombre = args.find((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 const formato = opt("formato", "vertical");
+if (!nombre && carpetaPedido) {
+  const md = join(dirMarca(opt("marca") || marcaActiva()).videos, carpetaPedido, "PEDIDO.md");
+  nombre = existsSync(md) ? ((readFileSync(md, "utf8").match(/^#\s+Pedido:\s*(.+)$/m) || [])[1] || "").trim() : "";
+  if (!nombre) nombre = carpetaPedido.replace(/^\d{4}-\d{2}-\d{2}_/, "").replace(/-/g, " ");
+}
 if (!nombre) salir('Falta el nombre. Ej: node herramientas/nuevo-video.mjs "cómo guardar el pan" --formato vertical');
 if (!["vertical", "horizontal"].includes(formato)) salir("--formato debe ser vertical u horizontal");
 
@@ -39,8 +47,13 @@ if (tematica && !existsSync(dirTematica)) salir(`No existe la temática "${temat
 const estiloUsado = dirEstilo === dm.estilo ? `marcas/${marca}/estilo` : "estilos/ejemplo-neutro";
 const slug = aSlug(nombre);
 const hoy = fechaHoy();
-const carpeta = join(dm.videos, `${hoy}_${slug}`);
-if (existsSync(carpeta)) salir(`Ya existe: ${rel(carpeta)}`);
+let carpeta = join(dm.videos, `${hoy}_${slug}`);
+if (carpetaPedido) {
+  if (!/^[\w.-]+$/.test(carpetaPedido)) salir("--carpeta es el nombre de la carpeta del video (AAAA-MM-DD_nombre), no una ruta.");
+  carpeta = join(dm.videos, carpetaPedido);
+  if (!existsSync(carpeta)) salir(`No existe ${rel(carpeta)}. Ver los pedidos: node herramientas/pedidos.mjs lista`);
+  if (existsSync(join(carpeta, "proyecto"))) salir(`${rel(carpeta)} ya tiene proyecto.`);
+} else if (existsSync(carpeta)) salir(`Ya existe: ${rel(carpeta)}`);
 
 const [W, H] = formato === "vertical" ? [1080, 1920] : [1920, 1080];
 
@@ -102,7 +115,9 @@ let html = readFileSync(idx, "utf8")
 writeFileSync(idx, html);
 
 // 5. Ficha y guion
-writeFileSync(join(carpeta, "LEEME.md"), `# ${nombre}
+const leemeExiste = existsSync(join(carpeta, "LEEME.md"));
+if (leemeExiste) writeFileSync(join(carpeta, "LEEME.md"), readFileSync(join(carpeta, "LEEME.md"), "utf8").replace(/^(\|\s*Estado\s*\|)\s*pedido\s*\|/im, "$1 idea |"));
+else writeFileSync(join(carpeta, "LEEME.md"), `# ${nombre}
 
 | Campo | Valor |
 | --- | --- |
@@ -119,7 +134,7 @@ writeFileSync(join(carpeta, "LEEME.md"), `# ${nombre}
 | Red | |
 | Creado | ${hoy} |
 
-Estados: idea, guion, voz, muestra, en animación, en revisión, entregado.
+Estados: pedido, idea, guion, voz, muestra, en animación, en revisión, entregado.
 
 ## De qué trata
 
@@ -134,7 +149,7 @@ Lo que está en \`entregas/\`.
 ## Notas
 `);
 
-writeFileSync(join(carpeta, "guion.md"), `# Guion: ${nombre}
+if (!existsSync(join(carpeta, "guion.md"))) writeFileSync(join(carpeta, "guion.md"), `# Guion: ${nombre}
 
 Reglas: la ficha de la marca (\`marcas/${marca}/ficha.md\`) y \`${estiloUsado}/reglas/voz.md\`.
 

@@ -23,6 +23,8 @@ function estadoFicha(id) {
 }
 
 if (!orden || orden === "lista") {
+  // El panel muestra que el agente ya pasó por la carpeta (paso "Abrir la carpeta en tu app")
+  try { mkdirSync(join(RAIZ, "mis-videos"), { recursive: true }); writeFileSync(join(RAIZ, "mis-videos", ".ultima-conversacion"), new Date().toISOString() + "\n"); } catch { }
   const c = leerConfig(), hay = listaMarcas();
   if (!hay.length) { console.log('No hay marcas todavía. Crea la primera: node herramientas/marcas.mjs nueva "<nombre>"'); process.exit(0); }
   const activa = marcaActiva({ obligatoria: false });

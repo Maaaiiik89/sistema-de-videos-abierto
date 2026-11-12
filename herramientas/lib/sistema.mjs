@@ -74,6 +74,37 @@ export function dirMarca(id) {
   };
 }
 
+// Texto seguro para una celda de tabla Markdown: una sola línea, sin "|"
+export function celda(v, max = 400) {
+  return String(v ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\|/g, "/").replace(/\s+/g, " ").trim().slice(0, max);
+}
+
+// Escribe el valor de una fila "| Campo | Valor |" de la ficha. Si la fila no existe, la agrega a la
+// sección indicada (la crea al final si tampoco existe). Devuelve true si cambió algo.
+export function ponerCampoFicha(id, campo, valor, seccion = "Contexto (opcional)") {
+  const f = dirMarca(id).ficha;
+  if (!existsSync(f)) return false;
+  let t = readFileSync(f, "utf8");
+  const v = celda(valor);
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp("^(\\|\\s*" + esc(campo) + "\\s*\\|)(.*)\\|\\s*$", "im");
+  if (re.test(t)) t = t.replace(re, (_, a) => `${a} ${v} |`);
+  else {
+    const fila = `| ${celda(campo, 80)} | ${v} |`;
+    const m = new RegExp("^##\\s+" + esc(seccion) + "\\s*$", "im").exec(t);
+    if (m) {
+      // al final de la tabla de esa sección
+      const desde = m.index + m[0].length, resto = t.slice(desde), sig = resto.search(/^##\s/m), bloque = sig >= 0 ? resto.slice(0, sig) : resto;
+      const ult = bloque.lastIndexOf("\n|");
+      const finFila = ult >= 0 ? bloque.indexOf("\n", ult + 1) : -1;
+      const corte = ult < 0 ? desde : finFila < 0 ? desde + bloque.length : desde + finFila;
+      t = t.slice(0, corte) + "\n" + fila + t.slice(corte);
+    } else t = t.replace(/\s*$/, "") + `\n\n## ${seccion}\n\n| Campo | Valor |\n| --- | --- |\n${fila}\n`;
+  }
+  writeFileSync(f, t);
+  return true;
+}
+
 // Lee una fila "| Campo | Valor |" de la ficha de la marca
 export function campoFicha(id, campo) {
   const f = dirMarca(id).ficha;

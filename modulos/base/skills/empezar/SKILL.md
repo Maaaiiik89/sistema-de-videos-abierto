@@ -5,7 +5,7 @@ description: Onboarding del sistema de videos y alta de marcas. Crea la marca en
 
 # Empezar: cargar una marca
 
-Objetivo: que el agente tenga todo lo necesario para hacer videos con la marca sin preguntar lo mismo cada vez. La persona puede no saber nada técnico: preguntas simples, con ejemplos y una opción por defecto. **Nunca le pidas que escriba un comando**: los corres tú. **Todo se configura aquí, conversando**; el panel solo sirve para revisar.
+Objetivo: que el agente tenga todo lo necesario para hacer videos con la marca sin preguntar lo mismo cada vez. La persona puede no saber nada técnico: preguntas simples, con ejemplos y una opción por defecto. **Nunca le pidas que escriba un comando**: los corres tú. Se configura conversando; el panel deja hacer algunas partes sin conversar (crear la marca con lo básico, elegir la paleta, subir el logo) y tú completas el resto.
 
 ## Dónde queda todo
 
@@ -13,6 +13,10 @@ Objetivo: que el agente tenga todo lo necesario para hacer videos con la marca s
 - `node herramientas/marcas.mjs nueva "<nombre>"` la crea con su ficha (`ficha.md`), su estilo (`estilo/`, copia del ejemplo neutro) y sus carpetas, y la deja activa.
 - `node herramientas/marcas.mjs lista` y `activar <id>` para ver y cambiar la marca con la que se trabaja. `info` muestra el estado.
 - Lo que la persona sube (logo, fotos, fuentes) llega a `mis-videos/bandeja/`: ordénalo con la skill `organizar`.
+
+## Si la marca ya se creó en el panel
+
+La persona puede crear la marca en el panel (Primeros pasos o un pedido) con lo básico: nombre, a qué se dedica, a quién le habla, web y tú o usted. Queda activa, con la ficha "sin completar". En ese caso **no vuelvas a preguntar lo que ya está**: lee la ficha, salúdala por el nombre de la marca y sigue con lo que falta. Si ya subió el logo o eligió la paleta en el panel (fila "Colores" de la ficha), úsalos.
 
 ## Cómo conversar
 
@@ -39,7 +43,7 @@ Dilo así, una sola vez:
 
 ### 2. Cómo se ve
 - Logo: "súbelo en el panel (Subir) o arrástralo aquí" (mejor SVG o PNG con fondo transparente). Va a `estilo/assets/logo/` de la marca.
-- Colores: de la web, del logo o desde cero. **Usa la skill `colores`**: propón 3 paletas que pasen las pruebas de contraste y que la persona elija.
+- Colores: de la web, del logo o desde cero. **Usa la skill `colores`**: propón 3 paletas que pasen las pruebas de contraste y que la persona elija. También puede armarla ella en el panel (Primeros pasos → Elegir tus colores, o Verificar → Marca → Visual): elige un color y el panel recomienda combinaciones con el contraste probado.
 - Tipografías: de la web, o elige una sensación: moderna (Outfit + Inter), elegante (Playfair Display + Lato), técnica (Space Mono + Inter), cercana (Nunito + Nunito), fuerte (Oswald + Roboto).
 - Estilo de animación: 3 o 4 looks de `estilos/LOOKS.md`, en una frase cada uno, y que elija.
 
@@ -59,6 +63,12 @@ Dilo así, una sola vez:
 - Palabras o frases que usa mucho, y otras que nunca diría.
 - ¿Va a grabar su voz? (recomendado). Si no: voz con IA (módulo Voz con IA, cuesta créditos) o solo texto y música.
 - ¿Sale en cámara?
+
+### Contexto (opcional, sin presionar)
+No es obligatorio, pero mejora los guiones. Pregúntalo en un solo mensaje y anota lo que responda en la sección "Contexto (opcional)" de la ficha (si la ficha es antigua y no la tiene, agrégala):
+- Slogan o frase de la marca; qué la hace distinta; productos o servicios principales.
+- Dónde está o a qué zona atiende; horario.
+- Temas que no toca; cuentas o marcas que admira; estilo de fotos e imágenes.
 
 ### 5. Música
 - ¿Qué música va con la marca? Alegre, corporativa, tranquila, enérgica o emotiva. Hay 5 libres en `recursos/musica/`: anota en la ficha cuál es la de la marca.

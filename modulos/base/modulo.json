@@ -1,12 +1,13 @@
 {
   "id": "base",
   "nombre": "Base",
-  "descripcion": "Lo esencial: cargar y cambiar marcas, ordenar la bandeja, colores con contraste probado y dónde va cada texto.",
+  "descripcion": "Lo esencial: cargar y cambiar marcas, revisar los pedidos de video, ordenar la bandeja, colores con contraste probado y dónde va cada texto.",
   "version": "1.0.0",
   "siempre": true,
   "activoPorDefecto": true,
   "skills": [
     "empezar",
+    "pedidos",
     "organizar",
     "colores",
     "encuadre-seguro",

@@ -16,6 +16,8 @@ Una paleta tiene 5 colores: **fondo**, **fondo 2** (franjas y paneles), **texto*
 
 Nunca propongas una paleta que no pasa sin decirlo.
 
+La persona también puede armar la paleta en el panel: elige su color principal, el panel le recomienda 4 combinaciones (complementaria, análoga, tríada y dividida, con la misma fórmula que `generar`), ajusta cada color y la guarda con `aplicar` (solo si pasa las 4 pruebas). Si te dice que la eligió en el panel, ya está aplicada: revisa con `verificar --marca <id>`.
+
 ## Herramienta
 
 ```bash

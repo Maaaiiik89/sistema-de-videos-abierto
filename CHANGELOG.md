@@ -2,6 +2,40 @@
 
 Cada versión, qué trae y si hay algo que hacer al actualizar. `Actualizar.bat` muestra esta información antes de actualizar.
 
+"En desarrollo" es lo que ya está terminado y saldrá en la próxima versión: se anota apenas se termina cada mejora. Al publicar, esa sección pasa a llamarse con el número de la versión.
+
+## En desarrollo
+
+Todavía nada: aquí se anota cada mejora de la próxima versión apenas se termina.
+
+## 0.5.0 (noviembre de 2026)
+
+**Pedidos de video.** Un video se pide conversando con el agente o con un formulario nuevo en el panel (Pedidos), en 7 pasos: marca (o una marca nueva), tipo, para qué, mensaje, redes y duración, voz y música, referencias y archivos. Los archivos suben directo a la carpeta del video, hasta 16 GB cada uno. Las dos formas terminan en el mismo pedido (`PEDIDO.md`), y **el agente siempre lo revisa antes de empezar**: que no falte nada, que tenga sentido y que los archivos sirvan. Te pregunta lo que falte (también lo ves en el panel y puedes responder ahí) y no escribe el guion hasta que confirmas el resumen. Herramienta nueva para el agente: `pedidos.mjs`, y skill `pedidos`.
+
+**Primeros pasos que te llevan a hacer cada cosa.** Cada paso tiene su acción: crear tu marca con un formulario corto, armar tu paleta, subir tu logo, decir que no quieres personaje, activar la música o pedir tu primer video con el formulario ya preparado. Lo que se conversa te dice qué escribirle al agente. En las demás pantallas, arriba aparece tu siguiente paso.
+
+**Arma tu paleta desde un color.** Eliges tu color principal (o uno de tu logo) y el panel te recomienda 4 combinaciones con el contraste probado. Ajustas cada color, «Arreglar el contraste» corrige lo que no se lee bien, y se guarda en tu marca.
+
+**Tu marca, más completa y más ordenada.** Verificar → Marca ahora tiene cuatro pestañas: ficha (lo esencial y el contexto opcional: slogan, qué te hace distinto, productos, horario, zona, temas que no tocas), visual (logo en sus versiones, colores, letras y elementos reutilizables), voz y música, y referencias.
+
+**Manual escrito para tu app**, con el selector de app arriba y los pasos de Claude, ChatGPT o Antigravity.
+
+**Almacenamiento.** En Mantenimiento ves qué ocupa espacio y qué puedes liberar, de lo más seguro a lo más delicado. Nada se borra solo: confirmas, va a la Papelera de reciclaje de Windows (se puede recuperar) y queda anotado.
+
+**Novedades y recorrido.** Mantenimiento muestra qué trae tu versión y todos los cambios. La primera vez que abres el panel, un recorrido de 2 minutos te muestra cada parte.
+
+**Referencias de video** (módulo nuevo, apagado al instalar).
+- Le pasas al agente el link de un video que te gusta y lo baja con yt-dlp, **sin usar tus cuentas**. yt-dlp y todas sus librerías quedan con versión fija y huella SHA-256 comprobada (si algo no coincide, no se instala), y para YouTube usa Deno sin permisos: el código de la página no puede tocar tus archivos, usar internet ni abrir programas. Funciona con TikTok y con las redes que dejan ver el video sin iniciar sesión; Instagram y YouTube a veces lo piden.
+- Si la red no deja bajarlo, lo guardas desde su app o grabas la pantalla con `Grabador.bat`, lo subes en el panel y el agente lo analiza igual.
+- El análisis deja en las referencias de tu marca la duración, el formato, cada corte y el ritmo, más una imagen con 12 cuadros del video. El agente estudia esa imagen en vez del video completo, así gasta muchos menos tokens.
+- El agente te dice qué toma de la referencia (en números: segundos por plano, cómo entran los textos) y tú lo apruebas. Nunca usa su contenido, su música ni su marca.
+
+**Corregido:**
+- La guía para crear un estilo decía que bajaras videos con yt-dlp, que el sistema no instalaba.
+- `Actualizar.bat` ya no borra los entornos de Python de los módulos (`.venv`): había que volver a instalarlos después de cada actualización.
+
+**Al actualizar desde 0.4:** nada que hacer. Las fichas de marca anteriores no tienen la sección "Contexto (opcional)": el agente la agrega cuando la completen juntos.
+
 ## 0.4.1 (noviembre de 2026)
 
 **Buscar versiones nuevas funciona aunque GitHub ponga límite.** Sin cuenta, GitHub permite 60 consultas por hora por dirección de internet, y muchos proveedores comparten una dirección entre muchos clientes. Ahora, si se pasó ese límite, `Actualizar.bat` y el panel buscan la versión por la página pública de GitHub, que no tiene ese límite. La huella SHA-256 se sigue comprobando igual.

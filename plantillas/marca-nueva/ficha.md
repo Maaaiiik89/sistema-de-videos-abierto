@@ -58,6 +58,21 @@ Estado: sin completar
 | Voz (propia, generada, sin voz) | |
 | Sale en cámara | |
 
+## Contexto (opcional)
+
+> No es obligatorio, pero el agente lo usa al escribir guiones y armar los elementos de los videos. Se completa conversando o desde el panel.
+
+| Campo | Valor |
+| --- | --- |
+| Slogan o frase | |
+| Qué la hace distinta | |
+| Productos o servicios | |
+| Dónde está o a qué zona atiende | |
+| Horario | |
+| Temas que no toca | |
+| Cuentas que admira | |
+| Estilo de fotos e imágenes | |
+
 ## Música
 
 | Campo | Valor |

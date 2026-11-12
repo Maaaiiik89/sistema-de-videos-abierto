@@ -21,6 +21,8 @@ Aviso de licencia MIT de Bang Motion: "Permission is hereby granted, free of cha
 | Whisper 20250625 | OpenAI | MIT | `Instalar.bat` |
 | FFmpeg, Git, Node.js, uv, Python | Sus proyectos | Las de cada proyecto | `Instalar.bat` (winget) |
 | Claude Drawing | cloveric, github.com/cloveric/claude-drawing-skill | MIT | Módulo Ilustración, al usarlo por primera vez |
+| yt-dlp 2026.10.26 y sus librerías (fijadas en `modulos/referencias/entorno/uv.lock`) | yt-dlp, github.com/yt-dlp/yt-dlp | Unlicense (dominio público); las librerías, las de cada una | Módulo Referencias, la primera vez que se baja un video |
+| Deno 2.9.8 | Deno Land, github.com/denoland/deno | MIT | Módulo Referencias, junto con yt-dlp (solo para el JavaScript de YouTube, sin permisos) |
 | App de Claude, ChatGPT o Antigravity | Anthropic, OpenAI o Google | Las de cada empresa | `Instalar.bat`, la que elijas |
 
 Si agregas un módulo de terceros, anótalo aquí (skill `crear-modulo`).

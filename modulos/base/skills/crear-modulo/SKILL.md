@@ -45,7 +45,7 @@ modulos/<id>/
 5. **Paso a paso:** para alguien que no sabe nada técnico. Qué hace, cómo se enciende, qué decirle al agente, qué esperar y qué hacer si falla.
 6. **Datos de la persona:** todo lo que el módulo genere va en `mis-videos/` (de la marca o del video), nunca en las carpetas del sistema.
 7. **Prueba completa:** `node herramientas/modulos.mjs activar <id>`, usarlo de punta a punta en una marca de prueba, apagarlo y comprobar que nada se rompe.
-8. **Registro:** anótalo en `CHANGELOG.md` y en `HOJA-DE-RUTA.md`.
+8. **Registro:** anótalo apenas esté terminado en la sección "En desarrollo" de `CHANGELOG.md` (qué hace, en palabras de la persona) y en `HOJA-DE-RUTA.md`.
 
 ## Módulos de terceros
 

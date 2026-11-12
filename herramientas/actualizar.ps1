@@ -122,6 +122,8 @@ Ok "versión $(((Get-Content (Join-Path $origen 'sistema.json') -Raw -Encoding U
 $protegidas = @("mis-videos", ".respaldos", "mcp-video\.venv", ".agents\skills", ".claude\skills", ".git", "node_modules",
   ".codex\config.toml", ".agents\mcp_config.json", "grabador\config.json", ".claude\settings.local.json")
 function EsProtegida($rel) {
+  # Los entornos de Python de los módulos (por ejemplo modulos\referencias\entorno\.venv) se generan en cada computador
+  if ($rel -match '(^|\\)\.venv(\\|$)') { return $true }
   foreach ($p in $protegidas) { if ($rel -ieq $p -or $rel.StartsWith($p + "\", [StringComparison]::OrdinalIgnoreCase)) { return $true } }
   return $false
 }

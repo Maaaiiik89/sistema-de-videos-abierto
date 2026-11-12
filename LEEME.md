@@ -56,17 +56,18 @@ Desde ahí, pídele lo que necesites con tus palabras:
 
 ### El panel
 
-`Panel.bat` abre una página en tu navegador que funciona solo en tu computador. No está conectado a tu app: el agente y el panel usan la misma carpeta, así que lo que hace el agente aparece en el panel en unos segundos. Tiene cinco partes:
+`Panel.bat` abre una página en tu navegador que funciona solo en tu computador. No está conectado a tu app: el agente y el panel usan la misma carpeta, así que lo que hace el agente aparece en el panel en unos segundos, y lo que haces en el panel el agente lo ve apenas le hablas. La primera vez te muestra un recorrido de 2 minutos. Tiene seis partes:
 
 | Parte | Para qué |
 | --- | --- |
-| **Primeros pasos** | El orden para empezar. Cada paso se marca solo cuando queda hecho en la carpeta |
-| **Manual** | Cómo pedir cada tipo de video, tu marca, el plan, los archivos, la seguridad y la guía de cada herramienta |
-| **Verificar** | Revisar lo que hizo el agente: tu marca (colores con sus pruebas de contraste, las paletas que propuso, la ficha), el plan del mes en calendario y los videos con su borrador y sus entregas |
-| **Subir** | Arrastrar audios, videos, fotos o logos a la bandeja, ver dónde los dejará el agente y lo que ya ordenó |
-| **Mantenimiento** | Buscar una versión nueva y actualizar, reparar la instalación, encender o apagar herramientas y elegir tu app |
+| **Primeros pasos** | El orden para empezar, con un botón para hacer cada paso: crear tu marca, armar tu paleta desde un color, subir tu logo, pedir tu primer video. Lo que se conversa te dice qué escribirle al agente. Cada paso se marca solo |
+| **Pedidos** | Pedir un video con un formulario (tipo, mensaje, redes, duración, voz, referencias y archivos de hasta 16 GB), ver en qué va cada pedido y responder las preguntas del agente |
+| **Manual** | Paso a paso, escrito para tu app (Claude, ChatGPT o Antigravity), y la guía de cada herramienta |
+| **Verificar** | Tu marca en cuatro pestañas (ficha, visual, voz y música, referencias), el plan del mes en calendario y los videos con su borrador y sus entregas |
+| **Subir** | Arrastrar fotos, música o un kit de marca a la bandeja, ver dónde los dejará el agente y lo que ya ordenó |
+| **Mantenimiento** | Versión y novedades, reparar la instalación, almacenamiento (qué ocupa espacio y qué puedes mandar a la Papelera), encender o apagar herramientas y elegir tu app |
 
-Todo lo demás (tu marca, los colores, el plan, ordenar archivos) se hace conversando con el agente. El panel funciona mientras su ventana negra esté abierta: para apagarlo, ciérrala.
+Un video se pide de dos formas: **conversando** con el agente o con el **formulario de Pedidos**. Las dos terminan en el mismo pedido, y el agente siempre lo revisa y te pregunta lo que falte antes de empezar. El formulario conviene para videos pesados (las apps no aceptan adjuntos grandes) y para lo que va en el video: lo que adjuntas en el chat queda en la conversación, no en la carpeta. El panel funciona mientras su ventana negra esté abierta: para apagarlo, ciérrala.
 
 ### Los otros archivos de doble clic
 
@@ -84,11 +85,11 @@ Empiezas con una. Si manejas más de un negocio o haces videos para clientes, di
 
 ### Subir archivos
 
-Arrástralos en el panel (Subir), déjalos en `mis-videos/bandeja/` o arrástralos a la conversación, y dile al agente "ordena la bandeja". Los guarda en la carpeta que corresponde, con fecha en el nombre, y anota qué movió. Nunca borra nada.
+Lo de un video en particular súbelo en su pedido (panel → Pedidos): va directo a la carpeta de ese video. Lo demás arrástralo en el panel (Subir) o déjalo en `mis-videos/bandeja/`, y dile al agente "ordena la bandeja". Los guarda en la carpeta que corresponde, con fecha en el nombre, y anota qué movió. El agente nunca borra nada; para liberar espacio, usa Mantenimiento → Almacenamiento en el panel.
 
 ### Herramientas que se encienden y apagan
 
-Cada herramienta (editor, animación, personaje, plan, música del catálogo, voz con IA, ilustración…) es un módulo. Algunas vienen apagadas porque usan internet, cuestan créditos o son de terceros. Enciéndelas en el panel (Mantenimiento), que te muestra qué implica cada una antes de activarla, o pídeselo al agente: "enciende la música del catálogo". Cada una tiene su guía paso a paso en el Manual del panel.
+Cada herramienta (editor, animación, personaje, plan, música del catálogo, voz con IA, ilustración, referencias de video…) es un módulo. Algunas vienen apagadas porque usan internet, cuestan créditos o son de terceros. Enciéndelas en el panel (Mantenimiento), que te muestra qué implica cada una antes de activarla, o pídeselo al agente: "enciende la música del catálogo". Cada una tiene su guía paso a paso en el Manual del panel.
 
 ## Cómo trabaja (el orden que funciona)
 

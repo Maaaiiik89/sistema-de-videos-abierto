@@ -7,8 +7,12 @@
 //
 // El panel NO está conectado a la app del agente: los dos usan la misma carpeta. El panel
 //   - LEE: fichas, paletas, planes, videos, bandeja, registro, módulos e instalación;
-//   - ESCRIBE solo: archivos nuevos en mis-videos/bandeja/ (nunca sobrescribe), módulos encendidos
-//     (con herramientas/modulos.mjs) y la app elegida en mis-videos/config.json;
+//   - ESCRIBE solo dentro de mis-videos/ (y con las herramientas del sistema): archivos nuevos en la bandeja,
+//     en las fuentes de un pedido o en el logo de una marca (nunca sobrescribe); pedidos de video (PEDIDO.md)
+//     y sus respuestas; una marca nueva con lo básico (marcas.mjs nueva); la paleta elegida (paleta.mjs
+//     aplicar, solo si pasa las 4 pruebas); "¿Tiene personaje? no" en la ficha; módulos encendidos
+//     (modulos.mjs); la app elegida en config.json. Manda a la Papelera de reciclaje solo lo que la persona
+//     marca en Almacenamiento, dentro de los grupos sugeridos (y lo anota en el registro);
 //   - ABRE: carpetas y archivos de la carpeta del sistema con el programa de Windows que corresponda,
 //     y las ventanas de Instalar.bat (reparar) y Actualizar.bat.
 //
@@ -26,6 +30,10 @@ import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { RAIZ, DATOS, MARCAS, BANDEJA, REGISTRO, CONFIG, listaMarcas, dirMarca } from "../herramientas/lib/sistema.mjs";
 import { pruebas } from "../herramientas/paleta.mjs";
+import { leer, leerJson, esDir, esArchivo, visibles, relRaiz, dentroDe, filasTabla, porSecciones, buscarSeccion, nombreSeguro, nombreLibre } from "./lib/util.mjs";
+import { logosDeMarca, bloquesDeMarca, referenciasDeMarca, cambios, pedidosParaPanel, crearMarca, aplicarPaleta, ponerFicha, guardarPedido, responderPedido, destinoSubida } from "./lib/extra.mjs";
+import { medir, sugerencias, liberar } from "./lib/almacen.mjs";
+import { agregarArchivo } from "../herramientas/lib/pedidos.mjs";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const PUERTO_BASE = 4317;
@@ -33,43 +41,8 @@ const TOKEN = randomBytes(24).toString("hex");
 const MAX_SUBIDA = 16 * 1024 ** 3; // 16 GB por archivo
 const NODE = process.execPath;
 
-// ------------------------------------------------------------------ lectura segura
-const leer = (f) => { try { return readFileSync(f, "utf8"); } catch { return ""; } };
-const leerJson = (f, def) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return def; } };
-const esDir = (p) => { try { return statSync(p).isDirectory(); } catch { return false; } };
-const esArchivo = (p) => { try { return statSync(p).isFile(); } catch { return false; } };
-const visibles = (d) => { try { return readdirSync(d).filter((f) => !f.startsWith(".")); } catch { return []; } };
-const relRaiz = (p) => p.slice(RAIZ.length + 1).split(sep).join("/");
+// ------------------------------------------------------------------ lectura segura (panel/lib/util.mjs)
 const leerConfig = () => ({ marcaActiva: null, modulos: {}, ...leerJson(CONFIG, {}) });
-
-function dentroDe(base, p) {
-  const r = resolve(p), b = resolve(base);
-  return r === b || r.toLowerCase().startsWith(b.toLowerCase() + sep);
-}
-
-// Tablas "| a | b |" de un bloque de texto, como filas de celdas (sin encabezado ni separador)
-function filasTabla(lineas) {
-  const filas = [];
-  for (const l of lineas) {
-    const m = l.match(/^\s*\|(.*)\|\s*$/);
-    if (!m) continue;
-    const c = m[1].split("|").map((s) => s.trim());
-    if (c.every((x) => /^:?-{2,}:?$/.test(x) || x === "")) continue;
-    filas.push(c);
-  }
-  return filas;
-}
-function porSecciones(texto) {
-  const out = [], lineas = texto.split(/\r?\n/);
-  let cur = { titulo: "", lineas: [] };
-  out.push(cur);
-  for (const l of lineas) {
-    const h = l.match(/^##\s+(.+?)\s*$/);
-    if (h) { cur = { titulo: h[1], lineas: [] }; out.push(cur); } else cur.lineas.push(l);
-  }
-  return out;
-}
-const buscarSeccion = (secc, re) => secc.find((s) => re.test(s.titulo.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()));
 
 // ------------------------------------------------------------------ marca
 const VARS = { fondo: "--ground", fondo2: "--ground-2", texto: "--paper", acento: "--accent", acento2: "--accent-2" };
@@ -169,6 +142,7 @@ function leerMarca(id, global) {
   const propuestas = (leerJson(join(d.estilo, "paletas-propuestas.json"), []) || []).filter((p) => p && p.fondo && p.texto && p.acento)
     .map((p) => conPruebas({ nombre: p.nombre || "Propuesta", fecha: p.fecha || "", para: p.para || "", fondo: p.fondo, fondo2: p.fondo2 || p.fondo, texto: p.texto, acento: p.acento, acento2: p.acento2 || p.acento }));
   const logo = logoDeMarca(join(d.estilo, "assets", "logo"));
+  const logos = logosDeMarca(d, (dir, f) => { try { return logosEjemplo.has(f + ":" + statSync(join(dir, f)).size); } catch { return false; } });
   const pjMd = leer(join(d.personaje, "PERSONAJE.md"));
   const pjEstado = ((pjMd.match(/^Estado:\s*(.+)$/m) || [])[1] || "").trim();
   const pjPrueba = buscarArchivo(d.personaje, "prueba-personaje.mp4");
@@ -194,6 +168,13 @@ function leerMarca(id, global) {
     pilares: pilaresDeFicha(f), paleta, propuestas, logo: logo ? relRaiz(logo) : null,
     personaje: { estado: pjEstado, prueba: pjPrueba ? relRaiz(pjPrueba) : null, carpeta: relRaiz(d.personaje), md: pjMd ? relRaiz(join(d.personaje, "PERSONAJE.md")) : null },
     tematicas, planes, videos,
+    logos, bloques: bloquesDeMarca(d), referencias: referenciasDeMarca(d), pedidos: pedidosParaPanel(id),
+    contexto: {
+      slogan: f.campo(/^Slogan/i), distinto: f.campo(/Qué la hace distinta/i), productos: f.campo(/^Productos o servicios/i),
+      ubicacion: f.campo(/^Dónde está/i), horario: f.campo(/^Horario/i), noToca: f.campo(/^Temas que no toca/i), admira: f.campo(/^Cuentas que admira/i),
+      imagen: f.campo(/^Estilo de fotos/i), web: f.campo(/^Web y redes/i), usa: f.campo(/^Palabras que usa/i), evita: f.campo(/^Palabras que evita/i),
+      fechas: f.campo(/^Fechas importantes/i), camara: f.campo(/^Sale en cámara/i), voz: f.campo(/^Voz \(/i)
+    },
     pasos: {
       ficha: /^completa/i.test(f.estado),
       colores: coloresEnFicha && !!paleta && paleta.pasaTodo && !paleta.deEjemplo,
@@ -236,7 +217,7 @@ function leerModulos(config) {
     return { ...j, activo: j.siempre ? true : typeof v === "boolean" ? v : !!j.activoPorDefecto, guia: leer(join(dir, m, "PASO-A-PASO.md")) };
   }).filter(Boolean).sort((a, b) => orden(a.id) - orden(b.id) || a.nombre.localeCompare(b.nombre));
 }
-const ORDEN = ["base", "grabador", "editor", "animacion", "mixto", "personaje", "plan", "musica", "voz-ia", "ilustrar"];
+const ORDEN = ["base", "grabador", "editor", "animacion", "mixto", "personaje", "plan", "musica", "voz-ia", "ilustrar", "referencias"];
 const orden = (id) => (ORDEN.indexOf(id) + 1 || 99);
 
 // ------------------------------------------------------------------ estado completo
@@ -253,6 +234,7 @@ async function estado() {
     generales[k] = dirs.reduce((n, d) => n + visibles(d).filter((f) => !/\.md$/i.test(f)).length, 0);
   return {
     sistema: { version: sistema.version || "?", repositorio: sistema.repositorio || "", raiz: RAIZ },
+    ultimaConversacion: leer(join(DATOS, ".ultima-conversacion")).trim() || null, musicaIncluida: !!config.musicaIncluida, cambios: cambios(),
     app: config.app || (instalacion && instalacion.app) || "",
     activa, instalacion,
     marcas: marcas.map((id) => leerMarca(id, { activa, registro })),
@@ -310,33 +292,26 @@ async function versionNueva() {
 }
 
 // ------------------------------------------------------------------ acciones
-function nombreSeguro(n) {
-  let s = basename(String(n || "").replace(/\\/g, "/")).normalize("NFC").replace(/[\u0000-\u001f<>:"/\\|?*]/g, "_").replace(/^[.\s]+/, "").replace(/[.\s]+$/, "");
-  if (s.length > 150) { const e = extname(s).slice(0, 12); s = s.slice(0, 150 - e.length) + e; }
-  if (!s) s = "archivo";
-  if (/^(con|prn|aux|nul|com\d|lpt\d)(\.|$)/i.test(s)) s = "_" + s;
-  return s;
-}
-function nombreLibre(dir, nombre) {
-  const e = extname(nombre), b = nombre.slice(0, nombre.length - e.length);
-  let n = nombre, i = 2;
-  while (existsSync(join(dir, n))) n = `${b}_${i++}${e}`;
-  return n;
-}
-
 async function subir(req, res, url) {
   const largo = Number(req.headers["content-length"] || 0);
   if (largo > MAX_SUBIDA) return responder(res, 413, { error: "El archivo pesa más de 16 GB." });
-  mkdirSync(BANDEJA, { recursive: true });
+  let destino = BANDEJA, pedido = null;
+  if (url.searchParams.get("marca")) {
+    const r = destinoSubida(url.searchParams.get("marca"), url.searchParams.get("tipo"), url.searchParams.get("carpeta"));
+    if (r.error) return responder(res, 400, { error: r.error });
+    destino = r.dir; pedido = r.pedido || null;
+  }
+  mkdirSync(destino, { recursive: true });
   const nombre = nombreSeguro(url.searchParams.get("nombre"));
-  const parcial = join(BANDEJA, `.subiendo-${randomBytes(6).toString("hex")}`);
+  const parcial = join(destino, `.subiendo-${randomBytes(6).toString("hex")}`);
   let total = 0;
   const limite = new Transform({ transform(c, _e, cb) { total += c.length; cb(total > MAX_SUBIDA ? new Error("demasiado grande") : null, c); } });
   try {
     await pipeline(req, limite, createWriteStream(parcial, { flags: "wx" }));
     if (largo && total !== largo) throw new Error("la subida se cortó");
-    const final = nombreLibre(BANDEJA, nombre);
-    renameSync(parcial, join(BANDEJA, final));
+    const final = nombreLibre(destino, nombre);
+    renameSync(parcial, join(destino, final));
+    if (pedido) agregarArchivo(pedido, final, "fuentes/" + final);
     responder(res, 200, { ok: true, nombre: final, tam: total });
   } catch (e) {
     rmSync(parcial, { force: true });
@@ -378,6 +353,7 @@ function guardarAjustes(b) {
     if (!["Claude", "ChatGPT", "Antigravity"].includes(b.app)) return { error: "App desconocida." };
     c.app = b.app;
   }
+  if (b.musicaIncluida !== undefined) c.musicaIncluida = !!b.musicaIncluida;
   mkdirSync(DATOS, { recursive: true });
   writeFileSync(CONFIG, JSON.stringify(c, null, 2) + "\n");
   return { ok: true };
@@ -420,6 +396,13 @@ function estatico(res, archivo, tipo, reemplazos) {
   res.writeHead(200, { ...SEGURIDAD, "Content-Type": tipo + "; charset=utf-8" });
   res.end(t);
 }
+// panel.js se arma con las partes de panel/js/ (en orden de nombre), todas dentro de la misma función
+function servirScript(res) {
+  const dir = join(AQUI, "js"), partes = visibles(dir).filter((f) => f.endsWith(".js")).sort();
+  const t = partes.length ? '(function () {\n  "use strict";\n' + partes.map((f) => `// ---- ${f}\n` + leer(join(dir, f))).join("\n") + "\n})();\n" : leer(join(AQUI, "panel.js"));
+  res.writeHead(200, { ...SEGURIDAD, "Content-Type": "text/javascript; charset=utf-8" });
+  res.end(t);
+}
 function cuerpoJson(req) {
   return new Promise((ok, mal) => {
     let s = "";
@@ -438,10 +421,11 @@ const servidor = http.createServer(async (req, res) => {
     if (req.method === "GET") {
       if (url.pathname === "/") return estatico(res, "index.html", "text/html", { "{{TOKEN}}": TOKEN });
       if (url.pathname === "/panel.css") return estatico(res, "panel.css", "text/css");
-      if (url.pathname === "/panel.js") return estatico(res, "panel.js", "text/javascript");
+      if (url.pathname === "/panel.js") return servirScript(res);
       if (url.pathname === "/api/hola") return responder(res, 200, { panel: "sistema-de-videos", raiz: RAIZ });
       if (url.pathname === "/api/estado") return responder(res, 200, await estado());
       if (url.pathname === "/api/version") return responder(res, 200, await versionNueva());
+      if (url.pathname === "/api/almacenamiento") return responder(res, 200, { ...medir(), grupos: sugerencias() });
       if (url.pathname === "/archivo") return servirArchivo(req, res, url);
       res.writeHead(404); return res.end();
     }
@@ -456,6 +440,12 @@ const servidor = http.createServer(async (req, res) => {
     if (url.pathname === "/api/abrir") return responder(res, 200, abrir(b.ruta));
     if (url.pathname === "/api/ventana") return responder(res, 200, ventana(b.que));
     if (url.pathname === "/api/ajustes") return responder(res, 200, guardarAjustes(b));
+    if (url.pathname === "/api/marca") return responder(res, 200, await crearMarca(b));
+    if (url.pathname === "/api/paleta") return responder(res, 200, await aplicarPaleta(b));
+    if (url.pathname === "/api/ficha") return responder(res, 200, ponerFicha(b));
+    if (url.pathname === "/api/pedido") return responder(res, 200, guardarPedido(b));
+    if (url.pathname === "/api/pedido/responder") return responder(res, 200, responderPedido(b));
+    if (url.pathname === "/api/liberar") return responder(res, 200, await liberar(b.grupo, b.rutas, !!b.entiendo));
     responder(res, 404, { error: "No existe." });
   } catch (e) {
     if (!res.headersSent) responder(res, 500, { error: e.message });

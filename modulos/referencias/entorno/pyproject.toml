@@ -1,0 +1,18 @@
+# Entorno del módulo Referencias: yt-dlp y Deno con versiones fijas.
+# uv.lock guarda la versión exacta y la huella SHA-256 de cada paquete: si un archivo
+# descargado no coincide, uv no lo instala. Se usa con: uv run --project <esta carpeta> --locked
+[project]
+name = "referencias-de-video"
+version = "1.0.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  # deno: el entorno de JavaScript que recomienda yt-dlp para YouTube. yt-dlp lo lanza
+  # sin permisos (sin archivos, sin internet, sin otros programas).
+  "yt-dlp[default,deno]==2026.10.26",
+]
+
+[tool.uv]
+package = false
+# Ningún paquete publicado en las últimas dos semanas (las versiones maliciosas o rotas
+# suelen detectarse en ese tiempo). Al actualizar, mover esta fecha y volver a correr uv lock.
+exclude-newer = "2026-10-29T00:00:00Z"

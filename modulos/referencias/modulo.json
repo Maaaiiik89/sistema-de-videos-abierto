@@ -1,0 +1,21 @@
+{
+  "id": "referencias",
+  "nombre": "Referencias de video",
+  "descripcion": "Baja un video público que te gusta para que el agente estudie su ritmo y su estructura, y analiza los que subas.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": false,
+  "skills": [
+    "referencias"
+  ],
+  "requiere": [],
+  "usaInternet": true,
+  "cuestaCreditos": false,
+  "deTerceros": true,
+  "instala": [
+    "yt-dlp 2026.10.26 y Deno 2.9.8 (de terceros, licencias Unlicense y MIT): se instalan la primera vez que bajas un video (unos 120 MB), con versiones fijas y comprobadas con su huella SHA-256",
+    "El JavaScript de YouTube corre en Deno sin permisos: no puede tocar tus archivos, usar internet ni abrir programas",
+    "No usa tus cuentas: solo baja videos públicos. Instagram y YouTube a veces no lo permiten; para esos se graba la pantalla",
+    "Bajar videos de redes puede ir contra las condiciones de cada plataforma: úsalo solo para estudiar referencias, nunca para publicar su contenido"
+  ]
+}
