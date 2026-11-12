@@ -1,0 +1,18 @@
+{
+  "id": "plan",
+  "nombre": "Planificación",
+  "descripcion": "El plan de contenido de cada mes: objetivo, pilares, ritmo, fechas importantes, etapas de cada video y lo que funcionó.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [
+    "planificar"
+  ],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Nada extra"
+  ]
+}

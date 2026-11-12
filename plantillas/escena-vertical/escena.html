@@ -1,0 +1,65 @@
+<template>
+  <!-- Escena vertical (1080x1920) con las zonas ya resueltas. Copiar a proyecto/compositions/<id>.html
+       y reemplazar {{ID}} (id de la escena, ej. "e2"), {{CLAVE}} (la misma clave de voz.js, ej. "e2")
+       y {{DUR}} (duración en segundos).
+
+       Zonas (px desde arriba):
+         200 a 470    #dato        la idea o el dato de la escena (no repite la voz palabra por palabra)
+         470 a 1180   #escenario   el personaje y la acción
+         1196 a 1330  subtítulos   la voz, palabra por palabra (los pone armarEscena)
+         1330 a 1920  #franja      solo dibujo: recorrido, cinta, patrón. NUNCA texto (lo tapan las apps)
+       Además: nada importante a la derecha de x 960 entre 1300 y 1900 (botones de la app). -->
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: var(--ground, #16181D); }
+    #dato { position: absolute; left: 80px; right: 140px; top: 200px; height: 270px;
+            display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; }
+    #dato .titulo { font-size: 92px; }
+    #dato .etiqueta { font-size: 30px; }
+    #escenario { position: absolute; left: 0; right: 0; top: 470px; height: 710px; }
+    #franja { position: absolute; left: 0; right: 0; top: 1330px; bottom: 0; overflow: hidden;
+              background: var(--ground-2, #20232A); }
+    #franja .cinta { position: absolute; top: 120px; left: 0; width: 4320px; height: 24px;
+                     background: repeating-linear-gradient(90deg, var(--accent, #2F80ED) 0 120px, transparent 120px 240px); opacity: .55; }
+    .sb { position: absolute; left: 70px; right: 140px; top: 1196px; text-align: center;
+          font-family: var(--font-sans, "Inter"), sans-serif; font-weight: 700; font-size: 56px; line-height: 1.12;
+          color: var(--paper, #F7F5F0); }
+  </style>
+  <div id="root" data-composition-id="{{ID}}" data-width="1080" data-height="1920">
+    <div id="dato">
+      <div class="etiqueta" id="dato-etiqueta">Dato</div>
+      <div class="titulo" id="dato-titulo">Un dato que <b>impacta</b></div>
+    </div>
+    <div id="escenario">
+      <!-- Aquí va el personaje (estilos/mi-marca/personaje/) y la acción de la escena -->
+    </div>
+    <div id="franja" data-layout-allow-overflow>
+      <div class="cinta" id="cinta"></div>
+    </div>
+    <div id="subs"></div>
+  </div>
+  <script>
+    (function () {
+      var DUR = {{DUR}};
+      var host = window.armarEscena("{{ID}}", "{{CLAVE}}", DUR, document.getElementById("subs"));
+      var tl = host.tl;
+      var P = function (palabra, n) { return window.tiempoPalabra("{{CLAVE}}", palabra, n); };
+
+      // Entrada del dato: cae en la palabra que lo nombra (cambiar "impacta" por la palabra real de la voz)
+      var tDato = Math.max(0.1, P("impacta") - 0.15);
+      tl.fromTo("#dato-etiqueta", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tDato);
+      tl.fromTo("#dato-titulo", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, tDato + 0.08);
+
+      // La franja se mueve toda la escena (nada quieto): avanza lineal, sin repeat infinito
+      var recorrido = 240 * Math.ceil(DUR * 1.5);
+      document.getElementById("cinta").style.width = (1080 + recorrido) + "px";
+      tl.fromTo("#cinta", { x: 0 }, { x: -recorrido, duration: DUR, ease: "none" }, 0);
+
+      // Salida rápida antes del corte (el cambio a la siguiente escena lo da la transición elegida)
+      tl.to("#dato", { opacity: 0, y: -20, duration: 0.2, ease: "power2.in" }, DUR - 0.25);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ID}}"] = tl;
+      host.ready();
+    })();
+  </script>
+</template>

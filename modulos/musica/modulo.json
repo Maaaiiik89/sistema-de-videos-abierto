@@ -1,0 +1,19 @@
+{
+  "id": "musica",
+  "nombre": "Música del catálogo",
+  "descripcion": "Miles de pistas gratis con tu cuenta de HyperFrames. Sin esto igual tienes 5 músicas libres.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": false,
+  "skills": [
+    "musica"
+  ],
+  "requiere": [],
+  "usaInternet": true,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Programa de HeyGen (lo instala Instalar.bat, verificado)",
+    "Inicio de sesión en el navegador con Conectar-musica.bat (una vez)"
+  ]
+}

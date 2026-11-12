@@ -1,0 +1,16 @@
+{
+  "id": "grabador",
+  "nombre": "Grabador",
+  "descripcion": "Graba tu pantalla, tu cámara o solo tu voz, con marcas mientras grabas.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Nada extra: usa Python y FFmpeg"
+  ]
+}

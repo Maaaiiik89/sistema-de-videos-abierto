@@ -1,0 +1,25 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    #sub-capa { position: absolute; inset: 0; }
+    .sb { position: absolute; left: 70px; right: 120px; top: 1150px; text-align: center; font-family: var(--font-sans, "Inter"), sans-serif; font-weight: 700; font-size: 58px; line-height: 1.15; color: #FFFFFF; -webkit-text-stroke: 10px #111214; paint-order: stroke fill; text-shadow: 0 6px 0 #111214; }
+    .sb b { font-weight: 800; }
+  </style>
+  <!-- Subtítulos dinámicos sobre el video: la palabra que se dice se marca con el acento de la marca.
+       ALTURA: dónde van (en px desde arriba). Vertical: 1150 deja libre la cara en un video de persona
+       hablando a cámara; si la cara está más abajo, probar 420. Horizontal: 830. -->
+  <div id="root" data-composition-id="subtitulos" data-width="{{W}}" data-height="{{H}}">
+    <div id="sub-capa"></div>
+  </div>
+  <script>
+    (function () {
+      var ALTURA = window.formatoVideo && window.formatoVideo() === "horizontal" ? 830 : 1150;
+      var capa = document.getElementById("sub-capa");
+      var host = window.armarEscena("subtitulos", "e1", {{DUR}}, capa);
+      host.subs.forEach(function (s) { document.querySelector(s[0]).style.top = ALTURA + "px"; });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["subtitulos"] = host.tl;
+      host.ready();
+    })();
+  </script>
+</template>

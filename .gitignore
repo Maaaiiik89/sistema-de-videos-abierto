@@ -1,0 +1,39 @@
+# Todo lo de cada persona (no se sube): solo la estructura vacía y su LEEME
+mis-videos/*
+!mis-videos/LEEME.md
+!mis-videos/bandeja/
+mis-videos/bandeja/*
+!mis-videos/bandeja/.gitkeep
+!mis-videos/marcas/
+mis-videos/marcas/*
+!mis-videos/marcas/.gitkeep
+!mis-videos/recursos/
+mis-videos/recursos/*
+!mis-videos/recursos/.gitkeep
+
+# Música: se suben solo las 5 pistas libres que vienen con el sistema
+recursos/musica/*
+!recursos/musica/LEEME.md
+!recursos/musica/alegre.mp3
+!recursos/musica/corporativa.mp3
+!recursos/musica/tranquila.mp3
+!recursos/musica/energica.mp3
+!recursos/musica/emotiva.mp3
+
+# Se generan en cada computador (Instalar.bat, Actualizar.bat, modulos.mjs)
+.agents/skills/
+.claude/skills/
+.claude/settings.local.json
+.codex/config.toml
+.agents/mcp_config.json
+.respaldos/
+grabador/config.json
+referencias/
+
+# Entornos y cachés
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+.hyperframes/
+.media/

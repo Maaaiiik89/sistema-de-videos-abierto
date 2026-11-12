@@ -1,0 +1,22 @@
+{
+  "id": "base",
+  "nombre": "Base",
+  "descripcion": "Lo esencial: cargar y cambiar marcas, ordenar la bandeja, colores con contraste probado y dónde va cada texto.",
+  "version": "1.0.0",
+  "siempre": true,
+  "activoPorDefecto": true,
+  "skills": [
+    "empezar",
+    "organizar",
+    "colores",
+    "encuadre-seguro",
+    "crear-modulo"
+  ],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Nada extra"
+  ]
+}

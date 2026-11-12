@@ -1,0 +1,112 @@
+{
+ "click-suave_1": {
+  "archivo": "click-suave_1.wav",
+  "duracion_s": 0.071,
+  "golpe_s": 0.011,
+  "uso": "Click del cursor en pantalla",
+  "fuente": "Light Taps",
+  "autor": "Luis0413",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/Luis0413/sounds/716245"
+ },
+ "click-suave_2": {
+  "archivo": "click-suave_2.wav",
+  "duracion_s": 0.212,
+  "golpe_s": 0.01,
+  "uso": "Click del cursor en pantalla",
+  "fuente": "Light Taps",
+  "autor": "Luis0413",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/Luis0413/sounds/716245"
+ },
+ "click-suave_3": {
+  "archivo": "click-suave_3.wav",
+  "duracion_s": 0.35,
+  "golpe_s": 0.01,
+  "uso": "Click del cursor en pantalla",
+  "fuente": "Light Taps",
+  "autor": "Luis0413",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/Luis0413/sounds/716245"
+ },
+ "tecla_1": {
+  "archivo": "tecla_1.wav",
+  "duracion_s": 0.27,
+  "golpe_s": 0.01,
+  "uso": "Una letra o línea de texto que aparece",
+  "fuente": "Keyboard - Press down",
+  "autor": "Foxfire-",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/Foxfire-/sounds/570754"
+ },
+ "tecla_2": {
+  "archivo": "tecla_2.wav",
+  "duracion_s": 0.09,
+  "golpe_s": 0.01,
+  "uso": "Una letra o línea de texto que aparece",
+  "fuente": "mechanical key soft.wav",
+  "autor": "bigmonmulgrew",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/bigmonmulgrew/sounds/378083"
+ },
+ "pop-suave_1": {
+  "archivo": "pop-suave_1.wav",
+  "duracion_s": 0.45,
+  "golpe_s": 0.015,
+  "uso": "Un número, pill o tarjeta chica que aterriza",
+  "fuente": "3 Popping Pops",
+  "autor": "wubitog",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/wubitog/sounds/188381"
+ },
+ "pop-suave_2": {
+  "archivo": "pop-suave_2.wav",
+  "duracion_s": 0.45,
+  "golpe_s": 0.011,
+  "uso": "Un número, pill o tarjeta chica que aterriza",
+  "fuente": "3 Popping Pops",
+  "autor": "wubitog",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/wubitog/sounds/188381"
+ },
+ "pop-suave_3": {
+  "archivo": "pop-suave_3.wav",
+  "duracion_s": 0.45,
+  "golpe_s": 0.013,
+  "uso": "Un número, pill o tarjeta chica que aterriza",
+  "fuente": "3 Popping Pops",
+  "autor": "wubitog",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/wubitog/sounds/188381"
+ },
+ "aire_1": {
+  "archivo": "aire_1.wav",
+  "duracion_s": 0.368,
+  "golpe_s": 0.211,
+  "uso": "Cambio de escena o barrido de color",
+  "fuente": "whoosh.soft.wav",
+  "autor": "junggle",
+  "licencia": "CC BY 4.0",
+  "enlace": "https://freesound.org/people/junggle/sounds/73263"
+ },
+ "aire_2": {
+  "archivo": "aire_2.wav",
+  "duracion_s": 0.9,
+  "golpe_s": 0.18,
+  "uso": "Cambio de escena o barrido de color",
+  "fuente": "Swishes_11_gentle.wav",
+  "autor": "videofueralle",
+  "licencia": "CC0 1.0",
+  "enlace": "https://freesound.org/people/videofueralle/sounds/614153"
+ },
+ "papel_1": {
+  "archivo": "papel_1.wav",
+  "duracion_s": 1.0,
+  "golpe_s": 0.011,
+  "uso": "Una tarjeta que entra deslizando",
+  "fuente": "Paper Slide - Our Town 1.wav",
+  "autor": "Hali_Pinson",
+  "licencia": "CC BY 3.0",
+  "enlace": "https://freesound.org/people/Hali_Pinson/sounds/404122"
+ }
+}

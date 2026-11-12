@@ -1,0 +1,18 @@
+{
+  "id": "editor",
+  "nombre": "Editor de video",
+  "descripcion": "Corta silencios, limpia la voz, hace zoom, transcribe y lleva cada video al formato de cada red. Todo en tu computador.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [
+    "editar-video-real"
+  ],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Whisper (descarga su modelo, unos 1,5 GB, la primera vez)"
+  ]
+}

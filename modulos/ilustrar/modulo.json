@@ -1,0 +1,20 @@
+{
+  "id": "ilustrar",
+  "nombre": "Ilustración",
+  "descripcion": "Ilustraciones pintadas con código en más de 80 estilos, sin generador de imágenes.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": false,
+  "skills": [
+    "ilustrar"
+  ],
+  "requiere": [
+    "animacion"
+  ],
+  "usaInternet": true,
+  "cuestaCreditos": false,
+  "deTerceros": true,
+  "instala": [
+    "Claude Drawing (licencia MIT, de terceros): el agente lo descarga la primera vez"
+  ]
+}

@@ -1,0 +1,61 @@
+# Publica una versión al subir una etiqueta (por ejemplo v0.4.0):
+# revisa que no vayan datos personales, arma el zip con su huella SHA-256 y crea la publicación (Release)
+# con las notas de CHANGELOG.md. Actualizar.bat y el panel leen esta publicación.
+name: Publicar versión
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: La versión de sistema.json coincide con la etiqueta
+        run: |
+          version=$(jq -r .version sistema.json)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::sistema.json dice $version y la etiqueta es $GITHUB_REF_NAME"; exit 1
+          fi
+          grep -q "^## $version " CHANGELOG.md || { echo "::error::CHANGELOG.md no tiene la sección $version"; exit 1; }
+
+      - name: Sin datos personales ni archivos generados
+        run: |
+          extra=$(git ls-files mis-videos | grep -v -E '^mis-videos/(LEEME\.md|(bandeja|marcas|recursos)/\.gitkeep)$' || true)
+          if [ -n "$extra" ]; then echo "::error::mis-videos trae archivos de alguien: $extra"; exit 1; fi
+          if git ls-files | grep -E '(^|/)(\.venv|__pycache__|\.respaldos|node_modules|\.hyperframes)/|^\.agents/(skills/|mcp_config\.json)|^\.claude/(skills/|settings\.local\.json)|^\.codex/config\.toml|^grabador/config\.json'; then
+            echo "::error::Hay archivos que se generan en cada computador"; exit 1
+          fi
+          if git grep -n -I -E '[A-Za-z]:[\\/]+Users[\\/]+[A-Za-z]|/home/[a-z]|@gmail\.com|@hotmail\.com|@outlook\.com' -- . ':!.github'; then
+            echo "::error::Hay rutas de un computador o correos personales"; exit 1
+          fi
+
+      - name: Armar el zip y su huella
+        run: |
+          git archive --format=zip --prefix=sistema-de-videos-abierto/ -o sistema-de-videos-abierto.zip HEAD
+          sha256sum sistema-de-videos-abierto.zip > sistema-de-videos-abierto.zip.sha256
+          cat sistema-de-videos-abierto.zip.sha256
+
+      - name: Notas de la versión
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          awk -v v="## $version " 'index($0, v) == 1 {on=1; next} /^## / && on {exit} on' CHANGELOG.md > notas.md
+          huella=$(cut -d' ' -f1 sistema-de-videos-abierto.zip.sha256)
+          printf '\n---\n\n**Descarga:** `sistema-de-videos-abierto.zip` (abajo, en Assets).\n\n**Huella SHA-256:** `%s`\n' "$huella" >> notas.md
+          cat notas.md
+
+      - name: Publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            sistema-de-videos-abierto.zip sistema-de-videos-abierto.zip.sha256 \
+            --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "Versión ${GITHUB_REF_NAME#v}" --notes-file notas.md

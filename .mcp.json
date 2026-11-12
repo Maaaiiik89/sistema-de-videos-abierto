@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "video-editor": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "mcp-video", "--python", "3.12", "server.py"],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}

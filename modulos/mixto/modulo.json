@@ -1,0 +1,21 @@
+{
+  "id": "mixto",
+  "nombre": "Video mixto",
+  "descripcion": "Tú a cámara con datos, gráficos o tu personaje encima.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [
+    "video-mixto"
+  ],
+  "requiere": [
+    "editor",
+    "animacion"
+  ],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Nada extra: usa Editor y Animación"
+  ]
+}

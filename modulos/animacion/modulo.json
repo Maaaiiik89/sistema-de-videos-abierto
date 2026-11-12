@@ -1,0 +1,18 @@
+{
+  "id": "animacion",
+  "nombre": "Animación",
+  "descripcion": "Videos animados con tu marca, sobre tu voz: guion visual, muestra y entrega.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [
+    "hacer-video"
+  ],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "HyperFrames 0.9.30 (lo instala Instalar.bat)"
+  ]
+}

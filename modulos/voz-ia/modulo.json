@@ -1,0 +1,19 @@
+{
+  "id": "voz-ia",
+  "nombre": "Voz con IA",
+  "descripcion": "Narración generada cuando no quieres grabar tu voz.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": false,
+  "skills": [
+    "voz-ia"
+  ],
+  "requiere": [],
+  "usaInternet": true,
+  "cuestaCreditos": true,
+  "deTerceros": false,
+  "instala": [
+    "Usa tu cuenta de HyperFrames (Conectar-musica.bat)",
+    "Cuesta créditos: respeta el límite de cada marca"
+  ]
+}

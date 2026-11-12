@@ -1,0 +1,14 @@
+{
+  "id": "nombre-del-modulo",
+  "nombre": "Nombre para personas",
+  "descripcion": "Una frase: qué hace, en palabras de la persona.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": false,
+  "skills": ["nombre-de-la-skill"],
+  "requiere": [],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": ["Qué instala o descarga, en una frase cada cosa (o \"Nada extra\")"]
+}

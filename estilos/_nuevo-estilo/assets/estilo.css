@@ -1,0 +1,11 @@
+/* <Nombre del estilo>: fuentes, colores y clases base.
+   nuevo-video.mjs copia esta carpeta a proyecto/assets/estilo/. */
+
+@font-face { font-family: "<Familia de títulos>"; src: url("fonts/<archivo>.woff2") format("woff2"); font-weight: 800; }
+
+:root {
+  --ground: #000000;
+  --ink: #FFFFFF;
+  --accent: #FF0000;
+  --font-display: "<Familia de títulos>", sans-serif;
+}

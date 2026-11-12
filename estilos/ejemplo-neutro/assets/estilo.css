@@ -1,0 +1,21 @@
+/* Ejemplo neutro: colores y clases base.
+   Outfit, Inter y JetBrains Mono vienen incluidas en HyperFrames: no necesitan @font-face.
+   nuevo-video.mjs copia esta carpeta a proyecto/assets/estilo/. */
+
+:root {
+  --ground: #16181D;
+  --ground-2: #20232A;
+  --paper: #F7F5F0;
+  --ink: #1C1E23;
+  --muted: #6B7079;
+  --accent: #2F80ED;
+  --accent-text: #1F63C4;
+  --font-display: "Outfit", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+.titulo { font-family: var(--font-display); font-weight: 800; color: var(--paper); line-height: 0.95; }
+.titulo b { color: var(--accent); }
+.texto { font-family: var(--font-sans); font-weight: 400; color: var(--paper); }
+.etiqueta { font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }

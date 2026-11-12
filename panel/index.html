@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="panel-token" content="{{TOKEN}}">
+<title>Panel de videos</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='2' width='12' height='20' rx='3' fill='none' stroke='%232E4FE0' stroke-width='2.5'/%3E%3Ccircle cx='14' cy='6' r='1.8' fill='%23D93A3F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/panel.css">
+</head>
+<body>
+<div class="aviso" id="aviso" role="status" hidden></div>
+<div class="app">
+  <aside class="lateral">
+    <div class="logo-app"><span class="marco" aria-hidden="true"></span>Sistema de videos</div>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#inicio" data-vista="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4L19 6"/><path d="M3 4h4M3 20h18"/></svg>Primeros pasos<span class="cuenta" id="cuenta-pasos" hidden></span></a>
+      <a href="#manual" data-vista="manual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 8h6M9 12h5"/></svg>Manual</a>
+      <a href="#verificar" data-vista="verificar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M8 11l2 2 4-4M21 21l-5-5"/></svg>Verificar</a>
+      <a href="#subir" data-vista="subir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Subir<span class="cuenta" id="cuenta-bandeja" hidden></span></a>
+      <a href="#mantenimiento" data-vista="mantenimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>Mantenimiento</a>
+    </nav>
+    <div class="pie">
+      <div class="conexion"><span class="eyebrow">Cómo se conecta</span><span class="muted">El agente y este panel usan la misma carpeta:</span><span class="mono" id="ruta-sistema" style="overflow-wrap:anywhere"></span><button class="enlace" type="button" data-copiar-ruta="1" style="align-self:flex-start">Copiar la ruta</button></div>
+    </div>
+  </aside>
+
+  <div class="principal">
+    <header class="barra">
+      <div id="zona-marca"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="chip-version" id="chip-version"></span>
+        <a class="chip-nueva" id="chip-nueva" href="#mantenimiento" hidden></a>
+      </div>
+    </header>
+    <main class="vista" id="vista"><p class="muted">Leyendo la carpeta…</p></main>
+  </div>
+</div>
+<div id="capas"></div>
+<script src="/panel.js"></script>
+</body>
+</html>

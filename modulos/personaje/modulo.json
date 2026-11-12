@@ -1,0 +1,20 @@
+{
+  "id": "personaje",
+  "nombre": "Personaje",
+  "descripcion": "Tu mascota armada una sola vez, con prueba de 5 segundos, y usada en todos los videos.",
+  "version": "1.0.0",
+  "siempre": false,
+  "activoPorDefecto": true,
+  "skills": [
+    "armar-personaje"
+  ],
+  "requiere": [
+    "animacion"
+  ],
+  "usaInternet": false,
+  "cuestaCreditos": false,
+  "deTerceros": false,
+  "instala": [
+    "Nada extra"
+  ]
+}

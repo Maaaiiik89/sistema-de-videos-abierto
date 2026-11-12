@@ -1,0 +1,42 @@
+<template>
+  <!-- Prueba de 5 segundos del personaje: la persona la mira y, solo con su sí, el personaje queda aprobado.
+       Muestra todas las acciones: entrar, saludar, hablar, expresiones, apuntar, caminar, parpadear y saltar. -->
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: var(--ground, #16181D); }
+    #piso { position: absolute; left: 0; right: 0; top: 1180px; height: 6px; background: var(--paper, #F7F5F0); opacity: .15; }
+    #rotulo { position: absolute; left: 80px; right: 140px; top: 220px; }
+    #rotulo .titulo { font-size: 84px; }
+    #rotulo .etiqueta { font-size: 30px; margin-bottom: 12px; }
+    #accion { position: absolute; left: 80px; top: 1240px; font-size: 44px; }
+  </style>
+  <div id="root" data-composition-id="prueba" data-width="1080" data-height="1920">
+    <div id="rotulo">
+      <div class="etiqueta">Prueba del personaje</div>
+      <div class="titulo">¿Así se <b>mueve</b>?</div>
+    </div>
+    <div id="piso"></div>
+    <div id="escena-pj"></div>
+    <div id="accion" class="texto">entra</div>
+  </div>
+  <script>
+    (function () {
+      var DUR = 5;
+      var tl = gsap.timeline({ paused: true });
+      var pj = window.Personaje.montar(document.getElementById("escena-pj"), { x: 400, y: 1180, escala: 1.4 });
+      var accion = document.getElementById("accion");
+      // tl.set guarda el texto anterior, así funciona igual al adelantar o retroceder la vista previa
+      function rotulo(t, txt) { tl.set(accion, { textContent: txt }, t); }
+
+      pj.entrar(tl, 0.1).respirar(tl, 0, DUR).parpadear(tl, [1.1, 3.3]);
+      rotulo(0.6, "saluda"); pj.saludar(tl, 0.6);
+      rotulo(1.6, "habla"); pj.hablar(tl, 1.6, 2.5, 0);
+      rotulo(2.5, "se sorprende"); pj.expresion(tl, 2.5, "sorpresa");
+      rotulo(3.0, "apunta"); pj.expresion(tl, 3.0, "feliz"); pj.apuntar(tl, 3.0, "derecha", 0.6);
+      rotulo(3.7, "camina"); pj.caminar(tl, 3.7, 4.5, 260);
+      rotulo(4.5, "salta"); pj.saltar(tl, 4.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["prueba"] = tl;
+    })();
+  </script>
+</template>
