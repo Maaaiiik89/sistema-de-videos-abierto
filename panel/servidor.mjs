@@ -264,16 +264,45 @@ async function estado() {
 
 // ------------------------------------------------------------------ versión nueva (GitHub)
 let cacheVersion = { t: 0, datos: null };
+const AGENTE = { "User-Agent": "sistema-de-videos" };
+
+// Sección "## <version> ..." de CHANGELOG.md, sin el título.
+function seccionCambios(texto, version) {
+  const lineas = String(texto).split(/\r?\n/), salida = [];
+  let dentro = false;
+  for (const l of lineas) {
+    if (l.startsWith("## ")) { if (dentro) break; dentro = l.startsWith(`## ${version} `); continue; }
+    if (dentro) salida.push(l);
+  }
+  return salida.join("\n").trim();
+}
+
+// Primero la API de GitHub. Sin cuenta permite 60 consultas por hora por dirección de internet, y muchos
+// proveedores comparten una dirección entre sus clientes: si se pasó el límite (o falla), se usa la página
+// pública "releases/latest", que redirige a la etiqueta, y las notas salen del CHANGELOG.md de esa etiqueta.
+async function ultimaPublicada(repo) {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { ...AGENTE, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(8000) });
+    if (r.ok) { const j = await r.json(); if (j.tag_name) return { tag: String(j.tag_name), notas: String(j.body || "") }; }
+  } catch { /* se intenta por la página pública */ }
+  const r = await fetch(`https://github.com/${repo}/releases/latest`, { method: "HEAD", redirect: "manual", headers: AGENTE, signal: AbortSignal.timeout(8000) });
+  const m = /\/releases\/tag\/(v\d+\.\d+\.\d+)$/.exec(r.headers.get("location") || "");
+  if (!m) throw new Error(r.status >= 300 && r.status < 400 ? "todavía no hay versiones publicadas" : `GitHub respondió ${r.status}`);
+  let notas = "";
+  try {
+    const c = await fetch(`https://raw.githubusercontent.com/${repo}/${m[1]}/CHANGELOG.md`, { headers: AGENTE, signal: AbortSignal.timeout(8000) });
+    if (c.ok) notas = seccionCambios(await c.text(), m[1].slice(1));
+  } catch { /* sin notas */ }
+  return { tag: m[1], notas: notas || "Las notas de esta versión están en CHANGELOG.md." };
+}
 async function versionNueva() {
   const s = leerJson(join(RAIZ, "sistema.json"), {});
   if (!s.repositorio) return { actual: s.version, repositorio: false };
   if (Date.now() - cacheVersion.t < 3600e3 && cacheVersion.datos) return cacheVersion.datos;
   try {
-    const r = await fetch(`https://api.github.com/repos/${s.repositorio}/releases/latest`, { headers: { "User-Agent": "sistema-de-videos", Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(8000) });
-    if (!r.ok) throw new Error(`GitHub respondió ${r.status}`);
-    const j = await r.json(), nueva = String(j.tag_name || "").replace(/^v/, "");
+    const j = await ultimaPublicada(s.repositorio), nueva = j.tag.replace(/^v/, "");
     const mayor = (a, b) => { const x = a.split(".").map(Number), y = b.split(".").map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
-    cacheVersion = { t: Date.now(), datos: { actual: s.version, repositorio: true, nueva: mayor(nueva, s.version) ? nueva : null, notas: String(j.body || "").slice(0, 4000) } };
+    cacheVersion = { t: Date.now(), datos: { actual: s.version, repositorio: true, nueva: mayor(nueva, s.version) ? nueva : null, notas: j.notas.slice(0, 4000) } };
     return cacheVersion.datos;
   } catch (e) {
     return { actual: s.version, repositorio: true, error: "No pude consultar GitHub: " + e.message };

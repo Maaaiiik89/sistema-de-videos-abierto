@@ -2,6 +2,12 @@
 
 Cada versión, qué trae y si hay algo que hacer al actualizar. `Actualizar.bat` muestra esta información antes de actualizar.
 
+## 0.4.1 (noviembre de 2026)
+
+**Buscar versiones nuevas funciona aunque GitHub ponga límite.** Sin cuenta, GitHub permite 60 consultas por hora por dirección de internet, y muchos proveedores comparten una dirección entre muchos clientes. Ahora, si se pasó ese límite, `Actualizar.bat` y el panel buscan la versión por la página pública de GitHub, que no tiene ese límite. La huella SHA-256 se sigue comprobando igual.
+
+**Al actualizar desde 0.4.0:** nada que hacer.
+
 ## 0.4.0 (noviembre de 2026)
 
 **El panel.** Doble clic en `Panel.bat` y se abre en tu navegador, solo en tu computador. No está conectado a tu app: lee la misma carpeta y se actualiza solo.

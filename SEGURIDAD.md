@@ -23,7 +23,7 @@ Revisado en noviembre de 2026 (versión 0.4).
 | Música del catálogo de HyperFrames | HeyGen | Se envía lo que buscas ("música alegre") y se descarga la pista. Solo si conectaste tu cuenta |
 | Voces o músicas generadas con IA | HeyGen | El texto del guion o la descripción de la música. Solo con tu sí, porque cuesta créditos |
 | Sacar la marca de una web | Tu computador visita esa web | Es una visita normal a la página |
-| El panel (`Panel.bat`) | En tu computador | No. Solo consulta GitHub para ver si hay una versión nueva (si el sistema tiene repositorio configurado). No usa fuentes ni servicios de internet |
+| El panel (`Panel.bat`) | En tu computador | No. Solo consulta GitHub (su API o, si esta pone límite, la página pública de versiones y el `CHANGELOG.md` del repositorio) para ver si hay una versión nueva. No usa fuentes ni servicios de internet |
 | Estadísticas de uso de HyperFrames | Servidores de HyperFrames | Qué comandos se usan (no tus videos). Si iniciaste sesión, asociadas a tu cuenta. Se pueden apagar (ver abajo) |
 
 ### Cómo cuidar lo que ve la app de IA

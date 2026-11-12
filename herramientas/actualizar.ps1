@@ -19,6 +19,31 @@ if ($env:SISTEMA_RAIZ) { $raiz = $env:SISTEMA_RAIZ.TrimEnd('\') }  # Actualizar.
 function Titulo($t) { Write-Host ""; Write-Host "== $t" -ForegroundColor Cyan }
 function Ok($t) { Write-Host "   listo: $t" -ForegroundColor Green }
 function Falla($t) { Write-Host ""; Write-Host $t -ForegroundColor Red; exit 1 }
+# Windows 10 con PowerShell 5.1 puede no ofrecer TLS 1.2, que GitHub exige.
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+
+# Última versión sin la API de GitHub: la página pública "releases/latest" redirige a la etiqueta de la versión;
+# el zip y su huella se bajan de sus direcciones públicas, y las notas salen del CHANGELOG.md de esa etiqueta.
+function UltimaSinApi($repo, $archivo) {
+  $req = [Net.HttpWebRequest]::Create("https://github.com/$repo/releases/latest")
+  $req.Method = "HEAD"; $req.AllowAutoRedirect = $false; $req.UserAgent = "sistema-de-videos"; $req.Timeout = 20000
+  $res = $req.GetResponse()
+  try { $destino = [string]$res.Headers["Location"] } finally { $res.Close() }
+  if ($destino -notmatch "/releases/tag/(v\d+\.\d+\.\d+)$") { throw "no encontré una versión publicada" }
+  $tag = $Matches[1]
+  $notas = "(No pude leer las notas de esta versión. Están en CHANGELOG.md.)"
+  try {
+    $cl = Join-Path $tmp "changelog.md"
+    Invoke-WebRequest -UseBasicParsing -UserAgent "sistema-de-videos" "https://raw.githubusercontent.com/$repo/$tag/CHANGELOG.md" -OutFile $cl
+    $texto = Get-Content $cl -Raw -Encoding UTF8
+    $v = [regex]::Escape($tag.Substring(1))
+    if ($texto -match "(?ms)^## $v [^\n]*\n(.*?)(?=^## |\z)") { $notas = $Matches[1].Trim() }
+  } catch { }
+  $base = "https://github.com/$repo/releases/download/$tag"
+  [pscustomobject]@{ tag_name = $tag; body = $notas; assets = @(
+    [pscustomobject]@{ name = $archivo; browser_download_url = "$base/$archivo" },
+    [pscustomobject]@{ name = "$archivo.sha256"; browser_download_url = "$base/$archivo.sha256" }) }
+}
 
 $info = Get-Content (Join-Path $raiz "sistema.json") -Raw -Encoding UTF8 | ConvertFrom-Json
 $actual = [version]$info.version
@@ -40,16 +65,22 @@ if ($Desde) {
 } else {
   if (-not $info.repositorio) { Write-Host ""; Write-Host "Todavía no hay un repositorio configurado para buscar actualizaciones (sistema.json)." -ForegroundColor Yellow; exit 0 }
   Titulo "Buscando la última versión"
-  $cab = @{ "User-Agent" = "sistema-de-videos"; "Accept" = "application/vnd.github+json" }
-  try { $rel = Invoke-RestMethod -UseBasicParsing -Headers $cab "https://api.github.com/repos/$($info.repositorio)/releases/latest" }
-  catch { Falla "No pude consultar GitHub ($($_.Exception.Message)). Revisa tu internet y vuelve a intentarlo." }
+  $cab = @{ "User-Agent" = "sistema-de-videos" }
+  try { $rel = Invoke-RestMethod -UseBasicParsing -Headers @{ "User-Agent" = "sistema-de-videos"; "Accept" = "application/vnd.github+json" } "https://api.github.com/repos/$($info.repositorio)/releases/latest" }
+  catch {
+    # Sin cuenta, la API de GitHub permite 60 consultas por hora por dirección de internet, y muchos proveedores
+    # comparten una dirección entre sus clientes. Si se pasó el límite (o la API falla), se usa la página pública.
+    try { $rel = UltimaSinApi $info.repositorio $info.archivo }
+    catch { Falla "No pude consultar GitHub ($($_.Exception.Message)). Revisa tu internet y vuelve a intentarlo." }
+  }
   $nueva = [version]($rel.tag_name -replace "^v", "")
   if ($nueva -le $actual) { Write-Host ""; Write-Host "Estás al día (versión $actual)." -ForegroundColor Green; exit 0 }
   $assetZip = $rel.assets | Where-Object { $_.name -eq $info.archivo } | Select-Object -First 1
   $assetSuma = $rel.assets | Where-Object { $_.name -eq "$($info.archivo).sha256" } | Select-Object -First 1
   if (-not $assetZip -or -not $assetSuma) { Falla "La versión $nueva no trae el zip y su huella SHA-256. No se actualiza." }
   $notas = $rel.body
-  Invoke-WebRequest -UseBasicParsing -Headers $cab $assetSuma.browser_download_url -OutFile (Join-Path $tmp "suma.txt")
+  try { Invoke-WebRequest -UseBasicParsing -Headers $cab $assetSuma.browser_download_url -OutFile (Join-Path $tmp "suma.txt") }
+  catch { Falla "No pude bajar la huella SHA-256 de la versión $nueva ($($_.Exception.Message)). No se actualizó nada." }
   $esperada = ((Get-Content (Join-Path $tmp "suma.txt") -Raw) -split "\s+")[0].Trim().ToLower()
 }
 
@@ -65,7 +96,8 @@ if (-not $SinPreguntar) {
 
 if (-not $Desde) {
   Titulo "Descargando"
-  Invoke-WebRequest -UseBasicParsing -Headers $cab $assetZip.browser_download_url -OutFile $zip
+  try { Invoke-WebRequest -UseBasicParsing -Headers $cab $assetZip.browser_download_url -OutFile $zip }
+  catch { Falla "No pude bajar la versión $nueva ($($_.Exception.Message)). Revisa tu internet y vuelve a intentarlo. No se actualizó nada." }
 }
 
 Titulo "Comprobando la huella SHA-256"
